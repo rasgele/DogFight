@@ -1,4 +1,4 @@
-package com.test.myfirsttriangle;
+package com.havzan.DogFight;
 
 public class Marker {
 

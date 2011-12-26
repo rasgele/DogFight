@@ -1,0 +1,9 @@
+{
+resources: {
+	com.badlogic.gdx.graphics.g2d.TextureRegion: {
+		skybox: { x: 2, y: 2, width: 512, height: 512 },
+		marker: { x: 516, y: 2, width: 128, height: 128 }
+	}
+},
+styles: {}
+}

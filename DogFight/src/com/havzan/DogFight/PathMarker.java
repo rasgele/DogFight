@@ -1,12 +1,14 @@
-package com.test.myfirsttriangle;
+package com.havzan.DogFight;
 
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 public class PathMarker {
@@ -29,11 +31,11 @@ public class PathMarker {
 	
 	void create()
 	{
-		m_mesh = ModelLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
+		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
 		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
-		m_texture = new Texture(Gdx.files.internal("data/red.png"), true);
+		m_texture = new Texture(Gdx.files.internal("data/ui/red.png"), true);
 		m_texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
-		m_immediateRenderer = new ImmediateModeRenderer();
+		m_immediateRenderer = new ImmediateModeRenderer10();
 	}
 	
 	void addLocation(Vector3 vec)
@@ -76,7 +78,7 @@ public class PathMarker {
 
 		gl.glColor4f(1,1,1,0);
 		
-		m_immediateRenderer.begin(GL10.GL_LINES);
+		m_immediateRenderer.begin(new Matrix4(), GL10.GL_LINES);
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		gl.glDisable(GL10.GL_LIGHTING);
 		

@@ -4,21 +4,26 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
-public class DogFightGame implements ApplicationListener, InputProcessor{
+public class DogFightGame implements ApplicationListener, InputProcessor {
 	PerspectiveCamera cam;
 	Mesh mesh;
 	Mesh grass;
@@ -68,13 +73,13 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 
 		droneCraft.Create();
 		droneCraft.getLocation().set(20, 0, -100);
-		
+
 		droneCraft.setThrust(0f);
 
 		droneCraft.SetPull(1);
-		
+
 		radar.setReference(aircraft);
-		
+
 		radar.addObjectToTrack(droneCraft);
 
 		grass = ObjLoader.loadObj(Gdx.files.internal("data/grass.obj").read());
@@ -82,12 +87,12 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 				Gdx.files.internal("data/grass-texture.jpg"), true);
 		grassTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
-		cam = new PerspectiveCamera();
+		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		cam.far = 2000;
 
 		cam.position.set(aircraft.getDirection().x, 0, 30);
-		cam.direction.set(-0, 0, -1);
+		cam.direction.set(0, 0, -1);
 		cam.up.set(1, 0, 0);
 
 		font = new BitmapFont();
@@ -99,7 +104,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 		Gdx.input.setInputProcessor(this);
 
 		resetInitialOrientation();
-		
+
 		try {
 			MarkerManager.getInstance().registerMarker(aircraft);
 			MarkerManager.getInstance().registerMarker(droneCraft);
@@ -114,18 +119,18 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 	}
 
 	private void createUI() {
-		ui = new Stage(480, 320, true);
+		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
 		slider = new Slider("slider");
 		slider.x = 0;
 		slider.y = 0;
-		
+
 		radar = new Radar("radar");
 		radar.x = ui.width() - radar.width;
 		radar.y = 0;
-		
-		LinearGroup group = new LinearGroup("linear_hor", 32 * 3, 32,
-				LinearGroupLayout.Horizontal);
+
+		//LinearGroup group = new LinearGroup("linear_hor", 32 * 3, 32,
+			//	LinearGroupLayout.Horizontal);
 
 		TextureRegion pressedRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/ui/switchCamPressed.png"), true), 0,
@@ -134,19 +139,19 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 				Gdx.files.internal("data/ui/switchCam.png"), true), 0, 0, 32,
 				32);
 
-		cameraSwitchButton = new Button("btn", normalRegion, pressedRegion);
+		cameraSwitchButton = new Button(new Button.ButtonStyle(new NinePatch(normalRegion), new NinePatch(pressedRegion), new NinePatch(normalRegion), 0f, 0f, 0f, 0.0f,
+				new BitmapFont(), Color.BLACK));
 
 		// cameraSwitchButton.x = ui.right() - cameraSwitchButton.width;
 		// cameraSwitchButton.y = ui.top() - cameraSwitchButton.height;
-		cameraSwitchButton.clickListener = new ClickListener() {
+		cameraSwitchButton.setClickListener(new ClickListener() {
 			@Override
-			public void clicked(Button button) {
-				button.action(RotateBy.$(360, 0.4f));
+			public void click(Actor actor) {
+				actor.action(RotateBy.$(360, 0.4f));
 				cameraMode = (cameraMode + 1) % MAX_CAM_MODE;
-				setCameraMode();
-
+				setCameraMode();				
 			}
-		};
+		});
 
 		pressedRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/ui/firePressed.png"), true), 0, 0, 32,
@@ -154,12 +159,13 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 		normalRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/ui/fire.png"), true), 0, 0, 32, 32);
 
-		fireButton = new Button("btnFire", normalRegion, pressedRegion);
+		fireButton = new Button(new Button.ButtonStyle(new NinePatch(normalRegion), new NinePatch(pressedRegion), new NinePatch(normalRegion), 0f, 0f, 0f, 0.0f,
+				new BitmapFont(), Color.BLACK));
 
-		fireButton.clickListener = new ClickListener() {
+		fireButton.setClickListener(new ClickListener() {
 			@Override
-			public void clicked(Button button) {
-				button.action(RotateBy.$(360, 0.4f));
+			public void click(Actor actor) {
+				actor.action(RotateBy.$(360, 0.4f));
 
 				if (missile != null)
 					MarkerManager.getInstance().unregisterMarker(missile);
@@ -168,8 +174,9 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 				cameraMode = 4;
 				setCameraMode();
 
+				
 			}
-		};
+		});
 
 		pressedRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/ui/togMarkerPressed.png"), true), 0,
@@ -178,29 +185,43 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 				Gdx.files.internal("data/ui/togMarker.png"), true), 0, 0, 32,
 				32);
 
-		markerToggleButton = new Button("btn", normalRegion, pressedRegion);
+		markerToggleButton = new Button(new Button.ButtonStyle());
 
 		// markerToggleButton.x = cameraSwitchButton.x -
 		// markerToggleButton.width - 5;
 		// markerToggleButton.y = ui.top() - markerToggleButton.height;
-		markerToggleButton.clickListener = new ClickListener() {
+		markerToggleButton.setClickListener(new ClickListener() {
 			@Override
-			public void clicked(Button button) {
-				button.action(RotateBy.$(360, 0.4f));
-				mShowMarker = !mShowMarker;
+			public void click(Actor actor) {
+				actor.action(RotateBy.$(360, 0.4f));
+				mShowMarker = !mShowMarker;				
 			}
-		};
+		});
 
-		group.addActor(cameraSwitchButton);
-		group.addActor(markerToggleButton);
-		group.addActor(fireButton);
-		group.x = ui.right() - group.width;
-		group.y = ui.top() - group.height;
+		cameraSwitchButton.width = 32;
+		cameraSwitchButton.height = 32;
+		markerToggleButton.width = 32;
+		markerToggleButton.height = 32;
+		fireButton.width = 32;
+		fireButton.height = 32;
+		
+		Table group = new Table();
+		group.row();
+		group.add(cameraSwitchButton);
+		group.add(markerToggleButton);
+		group.add(fireButton);
+		
+		group.top();
+		
+		group.debug();
+		
+		//group.x = ui.right() - group.width;
+		//group.y = ui.top() - group.height;
 
 		ui.addActor(slider);
 		ui.addActor(radar);
 		ui.addActor(group);
-		// ui.addActor(markerToggleButton);
+		ui.addActor(markerToggleButton);
 	}
 
 	private void resetInitialOrientation() {
@@ -226,12 +247,9 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 
 		setCameraMode();
 		cam.update();
+		cam.apply(gl);
 
 		aircraft.setThrust(slider.getPosition());
-
-		// m_skybox.render(cam);
-
-		cam.setMatrices();
 
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
@@ -241,19 +259,19 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 		float pitch = Gdx.input.getPitch();
 		float roll = Gdx.input.getRoll();
 
-		if (Gdx.input.isKeyPressed(Input.Keys.KEYCODE_DPAD_LEFT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
 			pitch = 90 + initialRoll;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.KEYCODE_DPAD_RIGHT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
 			pitch = -90 + initialRoll;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.KEYCODE_DPAD_UP)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
 			roll = 90 + initialPitch;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.KEYCODE_DPAD_DOWN)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
 			roll = -90 + initialPitch;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.KEYCODE_MENU)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.MENU)) {
 			resetInitialOrientation();
 		}
 
@@ -272,7 +290,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 		}
 
 		renderTerrain(gl);
-		renderMarker();
+		//renderMarker();
 
 		Vector3 direction = aircraft.getDirection().tmp();
 		direction.x = 0;
@@ -284,9 +302,8 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 		// if (direction.y > 0)
 		heading = Math.atan2(direction.y, direction.z);
 		int dir = ((int) (heading * 180 / Math.PI + 360)) % 360;
-		
+
 		float distance = aircraft.getLocation().dst(droneCraft.getLocation());
-		
 
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		batch.begin();
@@ -297,13 +314,18 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 					 * 30 + "\n" +
 					 */
 		"Position :" + aircraft.getLocation() + "\n" + "Heading :" + dir + "\n"
-				+ "Direction :" + aircraft.getDirection() + "\nDistance: " +
-				distance;
+				+ "Direction :" + aircraft.getDirection() + "\nDistance: "
+				+ distance;
 		font.drawMultiLine(batch, text, 20, Gdx.graphics.getHeight() - 5);
 		batch.end();
 
+
+		gl.glDisable(GL10.GL_LIGHTING);
+		
 		ui.act(deltaTime);
-		ui.render();
+		ui.draw();
+		
+		gl.glEnable(GL10.GL_LIGHTING);
 	}
 
 	private void renderMarker() {
@@ -319,7 +341,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 
 		grassTexture.bind();
 
-		grass.render(GL.GL_TRIANGLES);
+		grass.render(GL10.GL_TRIANGLES);
 
 		gl.glPopMatrix();
 	}
@@ -328,61 +350,62 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 		if (cameraMode == 0) {
 			Vector3 aircraftPos = aircraft.getLocation();
 			Vector3 aircraftDir = aircraft.getDirection();
-			float distanceToCraft = 10;
-			cam.getPosition().set(
+			float distanceToCraft = 100;
+			cam.position.set(
 					aircraftPos.x - aircraftDir.x * distanceToCraft,
 					aircraftPos.y - aircraftDir.y * distanceToCraft,
 					aircraftPos.z - aircraftDir.z * distanceToCraft);
-			cam.getDirection().set(aircraftDir);
+			cam.direction.set(aircraftDir);
 			cam.update();
 		} else if (cameraMode == 1) {
 			final float maxDistance = 30;
 
 			Vector3 camToaircraft = aircraft.getLocation().cpy()
-					.sub(cam.getPosition());
+					.sub(cam.position);
 			Vector3 camToCraftVec = camToaircraft.cpy().nor();
 
 			float distance = camToaircraft.len();
 
 			if (distance > maxDistance) {
-				cam.getPosition()
+				cam.position
 						.add(camToCraftVec.mul(distance - maxDistance));
 			}
-			cam.getDirection().set(camToCraftVec);
+			cam.direction.set(camToCraftVec);
 		} else if (cameraMode == 2) {
 			float maxLenghth2 = 60 * 60;
 
-			Vector3 delta = aircraft.getLocation().cpy().sub(cam.getPosition());
+			Vector3 delta = aircraft.getLocation().cpy().sub(cam.position);
 
 			if (delta.len2() > maxLenghth2) {
 				Vector3 newPos = aircraft.getLocation().cpy()
 						.add(aircraft.getDirection().cpy().mul(40));
-				cam.getPosition().set(newPos);
+				cam.position.set(newPos);
 			}
 
 			Vector3 camDir = aircraft.getLocation().cpy()
-					.sub(cam.getPosition()).nor();
-			cam.getDirection().set(camDir);
+					.sub(cam.position).nor();
+			cam.direction.set(camDir);
 		} else if (cameraMode == 3) {
 			final float MaxDistance = 25;
 			final float maxLenghth2 = MaxDistance * MaxDistance;
 
-			Vector3 delta = aircraft.getDirection().cpy().sub(cam.getPosition());
+			Vector3 delta = aircraft.getDirection().cpy()
+					.sub(cam.position);
 
 			if (delta.len2() > maxLenghth2) {
 				float distance = delta.len();
 				float deltaDistance = distance - MaxDistance;
 
 				Vector3 camDir = aircraft.getDirection().cpy()
-						.sub(cam.getPosition()).nor();
-				cam.getDirection().set(camDir);
+						.sub(cam.position).nor();
+				cam.direction.set(camDir);
 
-				cam.getPosition().add(
-						cam.getDirection().cpy().mul(deltaDistance));
+				cam.position.add(
+						cam.direction.cpy().mul(deltaDistance));
 			} else {
 				Vector3 camDir = aircraft.getDirection().cpy()
-						.sub(cam.getPosition()).nor();
-				cam.getDirection().set(camDir);
+						.sub(cam.position).nor();
+				cam.direction.set(camDir);
 			}
 
 		} else if (cameraMode == 4) {
@@ -394,11 +417,11 @@ public class DogFightGame implements ApplicationListener, InputProcessor{
 
 			float distanceToCraft = 10;
 
-			cam.getPosition().set(
+			cam.position.set(
 					missilePos.x - missileToAirCraft.x * distanceToCraft,
 					missilePos.y - missileToAirCraft.y * distanceToCraft,
 					missilePos.z - missileToAirCraft.z * distanceToCraft);
-			cam.getDirection().set(missileToAirCraft);
+			cam.direction.set(missileToAirCraft);
 			cam.update();
 
 		}

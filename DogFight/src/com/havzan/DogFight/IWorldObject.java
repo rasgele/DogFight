@@ -1,4 +1,4 @@
-package com.test.myfirsttriangle;
+package com.havzan.DogFight;
 
 import com.badlogic.gdx.math.Vector3;
 

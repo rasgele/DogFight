@@ -1,18 +1,22 @@
-package com.test.myfirsttriangle;
+package com.havzan.DogFight;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 
 public class Slider extends Group {
 
 	Button mButton;
-	Texture mButtonTexture;
+	TextureRegion mButtonTexture;
 	boolean mSliding = false;
 	Vector2 lastDragPoint = new Vector2();
 	float maxButtonY;
@@ -23,15 +27,18 @@ public class Slider extends Group {
 	public Slider(String name) {
 		super(name);
 
-		mButtonTexture = new Texture(Gdx.files.internal("data/sliderHandle.png"), true);
-		Texture mBackTexture = new Texture(Gdx.files.internal("data/sliderback.png"), true);
+		mButtonTexture = new TextureRegion(new Texture(Gdx.files.internal("data/ui/sliderHandle.png"), true));
+		TextureRegion mBackTexture = new TextureRegion(new Texture(Gdx.files.internal("data/ui/sliderback.png"), true));
 		mBackImage = new Image("sliderback", mBackTexture);
 		
-		mButton = new Button("_slider_button", mButtonTexture);
+		mButton = new Button(new Button.ButtonStyle(new NinePatch(mButtonTexture), new NinePatch(mButtonTexture), null, 0 ,0,0,0,null, Color.BLACK));
+		mButton.width = 32;
+		mButton.height = 32;
 		mButton.x = 0;
 		mButton.y = 0;
 
 		mBackImage.touchable = false;
+		
 		addActor(mBackImage);
 		addActor(mButton);
 		
@@ -45,7 +52,7 @@ public class Slider extends Group {
 	}
 	
 	@Override
-	protected boolean touchDown(float x, float y, int pointer) {
+	public boolean touchDown(float x, float y, int pointer) {
 		mSliding = super.touchDown(x, y, pointer);
 		
 		if (mSliding)
@@ -56,14 +63,13 @@ public class Slider extends Group {
 		return mSliding;
 	}
 	@Override
-	public void focus(Actor actor) {
+	public void focus(Actor actor, int pointer) {
 		// TODO Auto-generated method stub
-		focusedActor = actor;
-		if (parent != null) parent.focus(actor == null ? null : this);
+		if (parent != null) parent.focus(actor == null ? null : this, 0);
 		
 	}
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public void touchDragged(float x, float y, int pointer) {
 		if(mSliding)
 		{
 			//mButton.y += lastDragPoint.x - x;
@@ -72,23 +78,22 @@ public class Slider extends Group {
 			lastDragPoint.x = x;
 			mButton.y = Math.max(0, Math.min(maxButtonY, finalPos));
 			mPosition = mButton.y / maxButtonY;
-			return true;
+			return;
 		}
 		
-		return false;
+		return;
 	}
 	
 	@Override
-	protected boolean touchUp(float x, float y, int pointer) {
+	public void touchUp(float x, float y, int pointer) {
 		mSliding = false;
-		focus(null);
-		return false;
+		focus(null, 0);
+		return;
 	}
-	
 	@Override
-	protected void render(SpriteBatch batch) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		// TODO Auto-generated method stub
-		super.render(batch);
+		super.draw(batch, parentAlpha);
 	}
 
 	public void setPosition(float position) {

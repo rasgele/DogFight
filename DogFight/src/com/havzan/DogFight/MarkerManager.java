@@ -1,4 +1,4 @@
-package com.test.myfirsttriangle;
+package com.havzan.DogFight;
 
 import java.util.HashMap;
 import java.util.Map;

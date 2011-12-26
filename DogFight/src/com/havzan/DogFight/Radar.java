@@ -1,4 +1,4 @@
-package com.test.myfirsttriangle;
+package com.havzan.DogFight;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 
 public class Radar extends Group {
@@ -51,40 +50,40 @@ public class Radar extends Group {
 		width = 128;
 		height = 128;
 
-		mTrackableTex = new Texture(Gdx.files.internal("data/red.png"), true);
+		mTrackableTex = new Texture(Gdx.files.internal("data/ui/red.png"), true);
 		mTrackableTex.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 
 	@Override
-	protected boolean touchDown(float x, float y, int pointer) {
+	public boolean touchDown(float x, float y, int pointer) {
 		return false;
 	}
 
-	@Override
-	public void focus(Actor actor) {
-		// TODO Auto-generated method stub
-		focusedActor = actor;
-		if (parent != null)
-			parent.focus(actor == null ? null : this);
+//	@Override
+//	public void focus(Actor actor, ) {
+//		// TODO Auto-generated method stub
+//		focusedActor = actor;
+//		if (parent != null)
+//			parent.focus(actor == null ? null : this, 0);
+//
+//	}
 
+	@Override
+	public void touchDragged(float x, float y, int pointer) {
+
+		return;
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
-
-		return false;
-	}
-
-	@Override
-	protected boolean touchUp(float x, float y, int pointer) {
+	public void touchUp(float x, float y, int pointer) {
 		// mSliding = false;
-		focus(null);
-		return false;
+		focus(null, pointer);
+		return;
 	}
 
 	@Override
-	protected void render(SpriteBatch batch) {
-		super.render(batch);
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
 		update();
 		
 		float texWid = 8;
@@ -118,9 +117,9 @@ public class Radar extends Group {
 		Vector3 refLoc = mReference.getLocation().cpy();
 		
 		final Vector2 direction = new Vector2(-mReference.getDirection().y, -mReference.getDirection().z);
-		float angleToY = direction
+		//float angleToY = direction
 		Matrix3 rotationMatrix = new Matrix3();
-		rotationMatrix.setToRotation(angle)
+		//rotationMatrix.setToRotation(angle)
 		
 		Gdx.app.log(TAG, "Direction X :" + direction.x + "  Direction Y : " + direction.y);
 

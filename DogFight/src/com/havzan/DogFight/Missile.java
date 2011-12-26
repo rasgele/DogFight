@@ -1,16 +1,13 @@
-package com.test.myfirsttriangle;
-
-import org.lwjgl.opengl.OpenGLException;
+package com.havzan.DogFight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.MathUtils;
 
 public class Missile implements IWorldObject {
 	private static final String TAG = "Aircraft";
@@ -46,7 +43,7 @@ public class Missile implements IWorldObject {
 	}
 
 	void Create() {
-		m_mesh = ModelLoader.loadObj(Gdx.files.internal("data/missile.obj")
+		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/missile.obj")
 				.read());
 		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
 		m_texture = new Texture(Gdx.files.internal("data/camo.jpg"), true);
