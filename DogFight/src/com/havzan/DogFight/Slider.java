@@ -28,7 +28,7 @@ public class Slider extends Group {
 		super(name);
 
 		mButtonTexture = new TextureRegion(new Texture(Gdx.files.internal("data/ui/sliderHandle.png"), true));
-		TextureRegion mBackTexture = new TextureRegion(new Texture(Gdx.files.internal("data/ui/sliderback.png"), true));
+		TextureRegion mBackTexture = new TextureRegion(new Texture(Gdx.files.internal("data/ui/sliderback.png"), true), 0, 0, 32, 256);
 		mBackImage = new Image("sliderback", mBackTexture);
 		
 		mButton = new Button(new Button.ButtonStyle(new NinePatch(mButtonTexture), new NinePatch(mButtonTexture), null, 0 ,0,0,0,null, Color.BLACK));
