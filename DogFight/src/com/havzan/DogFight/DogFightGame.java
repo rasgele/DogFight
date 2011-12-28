@@ -72,9 +72,9 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		droneCraft = new Aircraft(90, 0);
 
 		droneCraft.Create();
-		droneCraft.getLocation().set(20, 0, -100);
+		droneCraft.getLocation().set(20, 1000, -3000);
 
-		droneCraft.setThrust(0f);
+		droneCraft.setThrust(0.5f);
 
 		droneCraft.SetPull(1);
 
@@ -102,7 +102,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		marker = new PathMarker();
 		marker.create();
 
-		Gdx.input.setInputProcessor(this);
+		Gdx.input.setInputProcessor(ui);
 
 		resetInitialOrientation();
 
@@ -115,7 +115,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		}
 
 		m_skybox = new SkyBox();
-		m_skybox.setCameraDirection(cam.direction);
+		m_skybox.setCameraDirection(cam.direction.cpy());
 		m_skybox.create();
 	}
 
@@ -129,9 +129,6 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		radar = new Radar("radar");
 		radar.x = ui.width() - radar.width;
 		radar.y = 0;
-
-		// LinearGroup group = new LinearGroup("linear_hor", 32 * 3, 32,
-		// LinearGroupLayout.Horizontal);
 
 		TextureRegion pressedRegion = new TextureRegion(new Texture(
 				Gdx.files.internal("data/ui/switchCamPressed.png"), true), 0,
@@ -147,8 +144,6 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		cameraSwitchButton.width = cameraSwitchButton.getPrefWidth();
 		cameraSwitchButton.height = cameraSwitchButton.getPrefHeight();
 
-		// cameraSwitchButton.x = ui.right() - cameraSwitchButton.width;
-		// cameraSwitchButton.y = ui.top() - cameraSwitchButton.height;
 		cameraSwitchButton.setClickListener(new ClickListener() {
 			@Override
 			public void click(Actor actor) {
@@ -305,7 +300,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		}
 
 		renderTerrain(gl);
-		// renderMarker();
+		renderMarker();
 
 		Vector3 direction = aircraft.getDirection().tmp();
 		direction.x = 0;
@@ -345,7 +340,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 	private void renderMarker() {
 		if (mShowMarker) {
 			MarkerManager.getInstance().updateMarkers();
-			MarkerManager.getInstance().render();
+			MarkerManager.getInstance().render(cam.projection);
 		}
 	}
 
@@ -364,12 +359,11 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		if (cameraMode == 0) {
 			Vector3 aircraftPos = aircraft.getLocation();
 			Vector3 aircraftDir = aircraft.getDirection();
-			float distanceToCraft = 100;
+			float distanceToCraft = 50;
 			cam.position.set(aircraftPos.x - aircraftDir.x * distanceToCraft,
 					aircraftPos.y - aircraftDir.y * distanceToCraft,
 					aircraftPos.z - aircraftDir.z * distanceToCraft);
 			cam.direction.set(aircraftDir);
-			cam.update();
 		} else if (cameraMode == 1) {
 			final float maxDistance = 30;
 
@@ -398,22 +392,22 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 					.nor();
 			cam.direction.set(camDir);
 		} else if (cameraMode == 3) {
-			final float MaxDistance = 25;
+			final float MaxDistance = 100;
 			final float maxLenghth2 = MaxDistance * MaxDistance;
 
-			Vector3 delta = aircraft.getDirection().cpy().sub(cam.position);
+			Vector3 delta = aircraft.getLocation().cpy().sub(cam.position);
 
 			if (delta.len2() > maxLenghth2) {
 				float distance = delta.len();
 				float deltaDistance = distance - MaxDistance;
 
-				Vector3 camDir = aircraft.getDirection().cpy()
+				Vector3 camDir = aircraft.getLocation().tmp()
 						.sub(cam.position).nor();
 				cam.direction.set(camDir);
 
 				cam.position.add(cam.direction.cpy().mul(deltaDistance));
 			} else {
-				Vector3 camDir = aircraft.getDirection().cpy()
+				Vector3 camDir = aircraft.getLocation().tmp()
 						.sub(cam.position).nor();
 				cam.direction.set(camDir);
 			}
@@ -437,9 +431,9 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 					* distanceToCraft, missilePos.z - missileToAirCraft.z
 					* distanceToCraft);
 			cam.direction.set(missileToAirCraft);
-			cam.update();
-
 		}
+
+		cam.update();
 
 	}
 

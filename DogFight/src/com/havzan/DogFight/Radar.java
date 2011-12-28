@@ -6,10 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 
@@ -33,19 +30,12 @@ public class Radar extends Group {
 	public Radar(String name) {
 		super(name);
 
-		// mButtonTexture = new
-		// Texture(Gdx.files.internal("data/sliderHandle.png"), true);
 		Texture mBackTexture = new Texture(
 				Gdx.files.internal("data/ui/radar.png"), true);
 		mBackImage = new Image("radar", mBackTexture);
 
-		// mButton = new Button("_slider_button", mButtonTexture);
-		// mButton.x = 0;
-		// mButton.y = 0;
-
 		mBackImage.touchable = false;
 		addActor(mBackImage);
-		// addActor(mButton);
 
 		width = 128;
 		height = 128;
@@ -58,15 +48,6 @@ public class Radar extends Group {
 	public boolean touchDown(float x, float y, int pointer) {
 		return false;
 	}
-
-//	@Override
-//	public void focus(Actor actor, ) {
-//		// TODO Auto-generated method stub
-//		focusedActor = actor;
-//		if (parent != null)
-//			parent.focus(actor == null ? null : this, 0);
-//
-//	}
 
 	@Override
 	public void touchDragged(float x, float y, int pointer) {
@@ -96,7 +77,7 @@ public class Radar extends Group {
 
 			if (trackable.visible) {
 				batch.draw(mTrackableTex, trackable.x + offsetX, trackable.y
-						+ offsetY, 8, 8, 0, 0, texWid, texHei);
+						+ offsetY, 4, 4, 0, 0, texWid, texHei);
 			}
 		}
 	}
@@ -114,34 +95,32 @@ public class Radar extends Group {
 	}
 
 	public void update() {
-		Vector3 refLoc = mReference.getLocation().cpy();
+		Vector2 refLoc = new Vector2(-mReference.getLocation().y, -mReference.getLocation().z);
 		
 		final Vector2 direction = new Vector2(-mReference.getDirection().y, -mReference.getDirection().z);
-		//float angleToY = direction
-		Matrix3 rotationMatrix = new Matrix3();
-		//rotationMatrix.setToRotation(angle)
+		float angleToY = (direction.angle() + 270) % 360;
 		
-		Gdx.app.log(TAG, "Direction X :" + direction.x + "  Direction Y : " + direction.y);
-
 		for (TrackableData trackable : mTrackables) {
-			Vector3 toTrackableVector = trackable.trackable.getLocation().cpy()
-					.sub(refLoc);
+			Vector2 trackableLoc = new Vector2(-trackable.trackable.getLocation().y, -trackable.trackable.getLocation().z);
+			Vector2 toTrackableVector = trackableLoc.cpy().sub(refLoc);
+			
+			toTrackableVector.rotate(-angleToY);
 
 			float toTrackableDistance = toTrackableVector.len();
 
 			if (toTrackableDistance <= getMaxDistance()) {
 				trackable.visible = true;
 
-				Vector3 toTrackableNorm = toTrackableVector.cpy().nor();
+				Vector2 toTrackableNorm = toTrackableVector.cpy().nor();
 				float toTrackableDistancePixels = toTrackableDistance
 						/ getMaxDistance() * this.width / 2;
 				
-				Gdx.app.log(TAG , "Y: " + toTrackableNorm.y + "    Z: " + toTrackableNorm.z);
+				//Gdx.app.log(TAG , "Y: " + toTrackableNorm.x + "    Z: " + toTrackableNorm.y);
 				
 				toTrackableNorm.mul(toTrackableDistancePixels);
 
-				trackable.x = -toTrackableNorm.y;
-				trackable.y = -toTrackableNorm.z;
+				trackable.x = toTrackableNorm.x;
+				trackable.y = toTrackableNorm.y;
 				
 			} else
 				trackable.visible = false;

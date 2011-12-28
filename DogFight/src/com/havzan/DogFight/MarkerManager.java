@@ -3,6 +3,8 @@ package com.havzan.DogFight;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.math.Matrix4;
+
 public class MarkerManager {
 
 	private static MarkerManager sInstance = null;
@@ -32,10 +34,10 @@ public class MarkerManager {
 		}
 	}
 	
-	public void render(){
+	public void render(Matrix4 projection){
 		for (Map.Entry<IWorldObject, PathMarker> entry : mObjectToMarkerMap
 				.entrySet()) {
-			entry.getValue().Render();
+			entry.getValue().Render(projection);
 		}
 	}
 

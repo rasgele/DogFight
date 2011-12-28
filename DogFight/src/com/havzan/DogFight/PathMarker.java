@@ -21,7 +21,7 @@ public class PathMarker {
 	Texture m_texture;
 	Color mColor;
 	
-	ImmediateModeRenderer m_immediateRenderer;
+	ImmediateModeRenderer10 m_immediateRenderer;
 	
 	PathMarker()
 	{
@@ -58,49 +58,60 @@ public class PathMarker {
 		m_lastPos = vec.cpy();
 	}
 	
-	void Render()
+	void Render(Matrix4 projection)
 	{
 		GL10 gl = Gdx.graphics.getGL10();
 
 		gl.glDisable(GL10.GL_TEXTURE_2D);
-		m_texture.bind();
-		gl.glColor4f(mColor.r, mColor.g, mColor.b, mColor.a);
+		//m_texture.bind();
+		gl.glColor4f(mColor.r, mColor.g, mColor.b, mColor.a / 4);
+		final float finalScale = 5;
+		float step = finalScale / m_positions.size();
+		int stepCount = 0;
 		for (Vector3 pos : m_positions)
 		{
 			gl.glPushMatrix();
 			gl.glTranslatef(pos.x, pos.y, pos.z);			
-			gl.glScalef(.2f, .2f, .2f);
-			
+			gl.glScalef(finalScale - step * stepCount, finalScale - step * stepCount, finalScale - step * stepCount);
+			stepCount++;
 			m_mesh.render(GL10.GL_TRIANGLES);
 			
 			gl.glPopMatrix();
 		}
 
 		gl.glColor4f(1,1,1,0);
-		
-		m_immediateRenderer.begin(new Matrix4(), GL10.GL_LINES);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glDisable(GL10.GL_LIGHTING);
-		
-		Vector3 previousPos = null;
-		
-		for (Vector3 pos : m_positions)
-		{
-			m_immediateRenderer.color(1, 1, 1, 1);
-			m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
-			m_immediateRenderer.vertex(0, pos.y, pos.z);
-			
-			if (previousPos != null)
-			{
-				m_immediateRenderer.color(1,1,1,1);
-				m_immediateRenderer.vertex(previousPos.x, previousPos.y, previousPos.z);
-				m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
-			}
-			
-			previousPos = pos;
-		}
-		m_immediateRenderer.end();
-		gl.glEnable(GL10.GL_LIGHTING);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+
+//		gl.glDisable(GL10.GL_TEXTURE_2D);
+//		//gl.glDisable(GL10.GL_LIGHTING);
+//		
+//		m_immediateRenderer.begin(GL10.GL_LINES);
+//
+//		m_immediateRenderer.color(1, 1, 1, 1);
+//		
+//		//gl.glPushMatrix();
+//		//gl.glLoadIdentity();
+//		Vector3 previousPos = null;
+//		
+//		for (Vector3 pos : m_positions)
+//		{
+//			m_immediateRenderer.color(1, 1, 1, 1);
+//			m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
+//			m_immediateRenderer.color(1, 1, 1, 1);
+//			m_immediateRenderer.vertex(0, pos.y, pos.z);
+//			
+//			if (previousPos != null)
+//			{
+//				m_immediateRenderer.color(1, 1, 1, 1);
+//				m_immediateRenderer.vertex(previousPos.x, previousPos.y, previousPos.z);
+//				m_immediateRenderer.color(1, 1, 1, 1);
+//				m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
+//			}
+//			
+//			previousPos = pos;
+//		}
+//		m_immediateRenderer.end();
+//		
+//		gl.glPopMatrix();
+//		gl.glEnable(GL10.GL_TEXTURE_2D);
 	}
 }
