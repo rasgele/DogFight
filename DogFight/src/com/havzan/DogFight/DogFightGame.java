@@ -84,7 +84,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 
 		grass = ObjLoader.loadObj(Gdx.files.internal("data/grass.obj").read());
 		grassTexture = new Texture(
-				Gdx.files.internal("data/checker-big.jpg"), true);
+				Gdx.files.internal("data/ui/checker-big.jpg"), true);
 		grassTexture.setFilter(TextureFilter.Linear, TextureFilter.MipMapNearestNearest);
 
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(),
