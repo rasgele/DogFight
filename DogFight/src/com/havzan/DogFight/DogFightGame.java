@@ -67,12 +67,12 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		aircraft = new Aircraft();
 
 		aircraft.Create();
-		aircraft.getLocation().set(20, 0, 0);
+		aircraft.getLocation().set(0, 0, 2000);
 
 		droneCraft = new Aircraft(90, 0);
 
 		droneCraft.Create();
-		droneCraft.getLocation().set(20, 1000, -3000);
+		droneCraft.getLocation().set(200, 0, 2000);
 
 		droneCraft.setThrust(0.5f);
 
@@ -82,19 +82,19 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 
 		radar.addObjectToTrack(droneCraft);
 
-		grass = ObjLoader.loadObj(Gdx.files.internal("data/grass.obj").read());
+		grass = ObjLoader.loadObj(Gdx.files.internal("data/gridHills.obj").read());
 		grassTexture = new Texture(
-				Gdx.files.internal("data/ui/checker-big.jpg"), true);
+				Gdx.files.internal("data/greenchecker.png"), true);
 		grassTexture.setFilter(TextureFilter.Linear, TextureFilter.MipMapNearestNearest);
 
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 
-		cam.far = 2000;
+		cam.far = 20000;
 
 		cam.position.set(aircraft.getDirection().x, 0, 30);
-		cam.direction.set(0, 0, -1);
-		cam.up.set(1, 0, 0);
+		cam.direction.set(1, 0, 0);
+		cam.up.set(0, 0, 1);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -270,10 +270,10 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		float roll = Gdx.input.getRoll();
 
 		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
-			pitch = 90 + initialRoll;
+			pitch = -90 + initialRoll;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
-			pitch = -90 + initialRoll;
+			pitch = 90 + initialRoll;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
 			roll = 90 + initialPitch;
@@ -419,22 +419,24 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 				return;
 			}
 			Vector3 missilePos = missile.getLocation();
-			// Vector3 missileDir = missile.getDirection();
+			Vector3 missileDir = missile.getDirection().mul(-1);
 
-			Vector3 missileToAirCraft = droneCraft.getLocation().cpy()
+			Vector3 missileToAirCraft = droneCraft.getLocation().tmp()
 					.sub(missilePos).nor();
 
-			float distanceToCraft = 10;
-
-			cam.position.set(missilePos.x - missileToAirCraft.x
-					* distanceToCraft, missilePos.y - missileToAirCraft.y
-					* distanceToCraft, missilePos.z - missileToAirCraft.z
+			float distanceToCraft = 20;
+			
+			cam.position.set(missilePos.x - missileDir.x
+					* distanceToCraft, missilePos.y - missileDir.y
+					* distanceToCraft, missilePos.z - missileDir.z
 					* distanceToCraft);
+			
+//			cam.position.set(missilePos.x - missileToAirCraft.x
+//					* distanceToCraft, missilePos.y - missileToAirCraft.y
+//					* distanceToCraft, missilePos.z - missileToAirCraft.z
+//					* distanceToCraft);
 			cam.direction.set(missileToAirCraft);
 		}
-
-		cam.update();
-
 	}
 
 	@Override

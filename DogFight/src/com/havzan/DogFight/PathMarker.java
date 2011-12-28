@@ -81,37 +81,37 @@ public class PathMarker {
 
 		gl.glColor4f(1,1,1,0);
 
-//		gl.glDisable(GL10.GL_TEXTURE_2D);
-//		//gl.glDisable(GL10.GL_LIGHTING);
-//		
-//		m_immediateRenderer.begin(GL10.GL_LINES);
-//
-//		m_immediateRenderer.color(1, 1, 1, 1);
-//		
-//		//gl.glPushMatrix();
-//		//gl.glLoadIdentity();
-//		Vector3 previousPos = null;
-//		
-//		for (Vector3 pos : m_positions)
-//		{
-//			m_immediateRenderer.color(1, 1, 1, 1);
-//			m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
-//			m_immediateRenderer.color(1, 1, 1, 1);
-//			m_immediateRenderer.vertex(0, pos.y, pos.z);
-//			
-//			if (previousPos != null)
-//			{
-//				m_immediateRenderer.color(1, 1, 1, 1);
-//				m_immediateRenderer.vertex(previousPos.x, previousPos.y, previousPos.z);
-//				m_immediateRenderer.color(1, 1, 1, 1);
-//				m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
-//			}
-//			
-//			previousPos = pos;
-//		}
-//		m_immediateRenderer.end();
-//		
-//		gl.glPopMatrix();
-//		gl.glEnable(GL10.GL_TEXTURE_2D);
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		//gl.glDisable(GL10.GL_LIGHTING);
+		
+		m_immediateRenderer.begin(GL10.GL_LINES);
+
+		m_immediateRenderer.color(1, 1, 1, 1);
+		
+		//gl.glPushMatrix();
+		//gl.glLoadIdentity();
+		Vector3 previousPos = null;
+		
+		for (Vector3 pos : m_positions)
+		{
+			m_immediateRenderer.color(1, 1, 1, 1);
+			m_immediateRenderer.vertex(pos.x, pos.y, 0);
+			m_immediateRenderer.color(1, 1, 1, 1);
+			m_immediateRenderer.vertex(pos.x, pos.y, 0);
+			
+			if (previousPos != null)
+			{
+				m_immediateRenderer.color(1, 1, 1, 1);
+				m_immediateRenderer.vertex(previousPos.x, previousPos.y, previousPos.z);
+				m_immediateRenderer.color(1, 1, 1, 1);
+				m_immediateRenderer.vertex(pos.x, pos.y, pos.z);
+			}
+			
+			previousPos = pos;
+		}
+		m_immediateRenderer.end();
+		
+		gl.glPopMatrix();
+		gl.glEnable(GL10.GL_TEXTURE_2D);
 	}
 }

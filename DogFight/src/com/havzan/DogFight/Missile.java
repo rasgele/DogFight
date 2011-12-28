@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Missile implements IWorldObject {
 	private static final String TAG = "Aircraft";
-	private static final float MaxSpeedPerSecond = 800;
+	private static final float MaxSpeedPerSecond = 600;
 	private float mFlightTime;
 	Mesh m_mesh;
 	Texture m_texture;
@@ -37,7 +37,7 @@ public class Missile implements IWorldObject {
 				m_combinedMatrix.val[Matrix4.M13],
 				m_combinedMatrix.val[Matrix4.M23]);
 
-		mDirection = new Vector3(0, 0, -1).mul(
+		mDirection = new Vector3(1, 0, 0).mul(
 				m_combinedMatrix.cpy().trn(-mLocation.x, -mLocation.y,
 						-mLocation.z)).nor();
 	}
@@ -112,7 +112,7 @@ public class Missile implements IWorldObject {
 
 				rotationMtx.mul(combinedRotation);
 
-				Vector3 direction = new Vector3(0, 0, -1);
+				Vector3 direction = new Vector3(1, 0, 0);
 				direction.mul(rotationMtx);
 				direction.nor();
 
@@ -147,10 +147,12 @@ public class Missile implements IWorldObject {
 		mLocation.add(deltaPos);
 		m_combinedMatrix.trn(deltaPos);
 
-		if (distanceToTarget < 10) {
+		if (m_tracking && distanceToTarget < 10) {
 			Gdx.app.log(TAG, "HIT!!!!!!!!!!!!!");
 			m_tracking = false;
 		}
+		else if (!m_tracking)
+			Gdx.app.log(TAG, "Missed");
 
 	}
 
@@ -161,16 +163,16 @@ public class Missile implements IWorldObject {
 
 		gl.glMultMatrixf(m_combinedMatrix.val, 0);
 
-		// gl.glDisable(GL10.GL_TEXTURE);
+		 //gl.glDisable(GL10.GL_TEXTURE);
 
 		m_texture.bind();
 
-		gl.glColor4f(1, 0, 0, 1);
+		//gl.glColor4f(1, 0, 0, 1);
 		m_mesh.render(GL10.GL_TRIANGLES);
 
-		gl.glColor4f(1, 1, 1, 0);
+		//gl.glColor4f(1, 1, 1, 0);
 
-		// gl.glEnable(GL10.GL_TEXTURE);
+		//gl.glEnable(GL10.GL_TEXTURE);
 
 		gl.glPopMatrix();
 	}

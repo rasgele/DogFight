@@ -34,7 +34,7 @@ public class Aircraft implements IWorldObject {
 	Aircraft(float lean, float pull) {
 		Matrix4 combinedRotation = new Matrix4(m_combinedMatrix);
 		
-		Vector3 rollVector = new Vector3(0, 0, 1).mul(combinedRotation);
+		Vector3 rollVector = new Vector3(1, 0, 0).mul(combinedRotation);
 
 		Matrix4 rollMatrix = new Matrix4().setToRotation(rollVector, lean);
 
@@ -68,7 +68,7 @@ public class Aircraft implements IWorldObject {
 				-m_combinedMatrix.val[Matrix4.M13],
 				-m_combinedMatrix.val[Matrix4.M23]);
 
-		Vector3 rollVector = new Vector3(0, 0, 1).mul(combinedRotation);
+		Vector3 rollVector = new Vector3(1, 0, 0).mul(combinedRotation);
 
 		Matrix4 rollMatrix = new Matrix4().setToRotation(rollVector, stepLean);
 
@@ -81,7 +81,7 @@ public class Aircraft implements IWorldObject {
 
 		pitchMatrix.mul(rollMatrix);
 
-		Vector3 direction = new Vector3(0, 0, -1);
+		Vector3 direction = new Vector3(1, 0, 0);
 		direction.mul(pitchMatrix);
 		direction.nor();
 		mDirection = new Vector3(direction);
