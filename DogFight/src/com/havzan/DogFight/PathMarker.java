@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class PathMarker {
 	LinkedList<Vector3> m_positions = new LinkedList<Vector3>();
-	int m_maxPositions = 50;
+	int m_maxPositions = 500;
 	float m_minDistance = 3.0f;
 	Vector3 m_lastPos = null;
 	
@@ -65,7 +65,7 @@ public class PathMarker {
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		//m_texture.bind();
 		gl.glColor4f(mColor.r, mColor.g, mColor.b, mColor.a / 4);
-		final float finalScale = 5;
+		final float finalScale = 3;
 		float step = finalScale / m_positions.size();
 		int stepCount = 0;
 		for (Vector3 pos : m_positions)

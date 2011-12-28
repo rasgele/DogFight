@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Missile implements IWorldObject {
 	private static final String TAG = "Aircraft";
-	private static final float MaxSpeedPerSecond = 900;
+	private static final float MaxSpeedPerSecond = 800;
 	private float mFlightTime;
 	Mesh m_mesh;
 	Texture m_texture;
@@ -20,7 +20,7 @@ public class Missile implements IWorldObject {
 	private Vector3 mDirection;
 
 	private float m_speedPerSec = 0;
-	private static float MaxRotationPerSecond = 120;
+	private static float MaxRotationPerSecond = 135;
 	private Matrix4 m_combinedMatrix;
 
 	private IWorldObject m_target = null;
@@ -137,10 +137,10 @@ public class Missile implements IWorldObject {
 			mLastUpdate = 0;
 		}
 
-		if (mFlightTime > 3.0)
+		if (mFlightTime > 8.0)
 			m_speedPerSec = MaxSpeedPerSecond;
 		else{
-			m_speedPerSec = MaxSpeedPerSecond / (4.0f - mFlightTime);
+			m_speedPerSec = MaxSpeedPerSecond / (9.0f - mFlightTime);
 		}
 		Gdx.app.log(TAG, "Speed per sec :" + m_speedPerSec);
 		Vector3 deltaPos = mDirection.cpy().mul(m_speedPerSec * deltaSec);
