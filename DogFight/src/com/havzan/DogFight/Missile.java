@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Missile implements IWorldObject {
 	private static final String TAG = "Aircraft";
-	private static final float MaxSpeedPerSecond = 600;
+	private static final float MaxSpeedPerSecond = 900;
 	private float mFlightTime;
 	Mesh m_mesh;
 	Texture m_texture;
@@ -20,7 +20,8 @@ public class Missile implements IWorldObject {
 	private Vector3 mDirection;
 
 	private float m_speedPerSec = 0;
-	private static float MaxRotationPerSecond = 135;
+	private static float MaxRotationPerSecond = 90;
+	private final double MaxTrackingAngle = Math.PI / 3;
 	private Matrix4 m_combinedMatrix;
 
 	private IWorldObject m_target = null;
@@ -58,8 +59,9 @@ public class Missile implements IWorldObject {
 	void Update(float deltaSec) {
 		if (!m_tracking)
 			return;
+
 		mFlightTime += deltaSec;
-		
+
 		mLastUpdate += deltaSec;
 
 		Vector3 targetLoc = m_target.getLocation().cpy();
@@ -80,10 +82,10 @@ public class Missile implements IWorldObject {
 			float angleToTargetAbs = Math.abs(angleToTarget);
 			float angleToTargetSign = Math.signum(angleToTarget);
 
-			if (angleToTargetAbs > Math.PI / 3) {
+			if (angleToTargetAbs > MaxTrackingAngle) {
 				m_tracking = false;
 			}
-
+			angleToTargetAbs = (float) (angleToTargetAbs * 180 / Math.PI);
 			angleToTarget = (float) (angleToTarget * 180 / Math.PI);
 
 			if (angleToTarget != 0 && m_tracking) {
@@ -137,21 +139,21 @@ public class Missile implements IWorldObject {
 			mLastUpdate = 0;
 		}
 
-		if (mFlightTime > 8.0)
+		if (mFlightTime > 3.0)
 			m_speedPerSec = MaxSpeedPerSecond;
-		else{
-			m_speedPerSec = MaxSpeedPerSecond / (9.0f - mFlightTime);
+		else {
+			m_speedPerSec = MaxSpeedPerSecond / (4.0f - mFlightTime);
 		}
-		Gdx.app.log(TAG, "Speed per sec :" + m_speedPerSec);
-		Vector3 deltaPos = mDirection.cpy().mul(m_speedPerSec * deltaSec);
-		mLocation.add(deltaPos);
-		m_combinedMatrix.trn(mLocation);
+		if (m_tracking) {
+			Vector3 deltaPos = mDirection.cpy().mul(m_speedPerSec * deltaSec);
 
+			mLocation.add(deltaPos);
+			m_combinedMatrix.trn(mLocation);
+		}
 		if (m_tracking && distanceToTarget < 10) {
 			Gdx.app.log(TAG, "HIT!!!!!!!!!!!!!");
 			m_tracking = false;
-		}
-		else if (!m_tracking)
+		} else if (!m_tracking)
 			Gdx.app.log(TAG, "Missed");
 
 	}

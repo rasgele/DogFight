@@ -12,9 +12,9 @@ public class CameraMan {
 
 	public float trackOffsetDist = 10;
 	public float trackOffsetLeft = -30;
-	public float trackOffsetHeight = -30;
+	public float trackOffsetHeight = 15;
 
-	public float mDistanceToTrack = 20;
+	public float mDistanceToTrack = 50;
 
 	public enum CameraMode {
 		NONE, TRACKMODE, FROMTOMODE
@@ -42,13 +42,9 @@ public class CameraMan {
 			Vector3 trackPos = mTrackedObjFrom.getLocation();
 			Vector3 trackDir = mTrackedObjFrom.getDirection().tmp().nor();
 			
-			Gdx.app.log("CAMMAN", "TRACKDIR :" + trackDir);
+			getCamera().position.set(calculateCamPos(trackPos, trackDir).add(getCamera().up.tmp().mul(trackOffsetHeight)));
 
-			getCamera().position.set(calculateCamPos(trackPos, trackDir));
-
-			getCamera().direction.set(trackDir);
-			
-			Gdx.app.log("CAMMAN", trackPos.tmp().sub(getCamera().position).toString());
+			getCamera().lookAt(trackPos.x, trackPos.y, trackPos.z);
 			
 			break;
 		}
@@ -56,18 +52,9 @@ public class CameraMan {
 			Vector3 trackFromPos = mTrackedObjFrom.getLocation();
 			Vector3 fromToToDir = mTrackedObjTo.getLocation().tmp().sub(mTrackedObjFrom.getLocation()).nor();
 			
-			Gdx.app.log("CAMMAN", "From Pos : " + trackFromPos);
-			Gdx.app.log("CAMMAN", "Dir : " + fromToToDir);
-
-			Gdx.app.log("CAMMAN", "Dir : " + fromToToDir);
-			
 			mCamera.position.set(calculateCamPos(trackFromPos, fromToToDir));
 			
-			Gdx.app.log("CAMMAN", "Cam Pos" + mCamera.position);
-			
 			mCamera.direction.set(fromToToDir);
-			
-			
 			
 			break;
 		}

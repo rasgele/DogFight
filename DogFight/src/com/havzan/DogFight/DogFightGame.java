@@ -57,7 +57,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 	Button cameraSwitchButton;
 	Button markerToggleButton;
 
-	boolean mShowMarker = true;
+	boolean mShowMarker = false;
 	private Button fireButton;
 	private Radar radar;
 
@@ -77,7 +77,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 
 		droneCraft.setThrust(0.5f);
 
-		droneCraft.SetPull(1);
+		droneCraft.SetPull(1f);
 
 		radar.setReference(aircraft);
 
@@ -152,7 +152,6 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 			@Override
 			public void click(Actor actor) {
 				actor.action(RotateBy.$(360, 0.4f));
-				cameraMode = (cameraMode + 1) % MAX_CAM_MODE;
 
 				if (mCamMan.getMode() == CameraMode.TRACKMODE)
 				{
@@ -187,9 +186,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 					MarkerManager.getInstance().unregisterMarker(missile);
 				missile = aircraft.fireTo(droneCraft);
 				MarkerManager.getInstance().registerMarker(missile);
-				mCamMan.mDistanceToTrack = 10;
-				mCamMan.trackMode(missile);
-				cameraMode = 4;
+				mCamMan.fromToMode(missile, droneCraft);
 			}
 		});
 

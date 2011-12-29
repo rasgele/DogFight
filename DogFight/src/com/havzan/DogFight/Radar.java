@@ -95,23 +95,24 @@ public class Radar extends Group {
 	}
 
 	public void update() {
-		Vector2 refLoc = new Vector2(-mReference.getLocation().y, -mReference.getLocation().z);
+		Vector2 refLoc = new Vector2(mReference.getLocation().x, mReference.getLocation().y);
 		
-		final Vector2 direction = new Vector2(-mReference.getDirection().y, -mReference.getDirection().z);
+		final Vector2 direction = new Vector2(mReference.getDirection().x, mReference.getDirection().y);
 		float angleToY = (direction.angle() + 270) % 360;
 		
 		for (TrackableData trackable : mTrackables) {
-			Vector2 trackableLoc = new Vector2(-trackable.trackable.getLocation().y, -trackable.trackable.getLocation().z);
+			Vector2 trackableLoc = new Vector2(trackable.trackable.getLocation().x, trackable.trackable.getLocation().y);
 			Vector2 toTrackableVector = trackableLoc.cpy().sub(refLoc);
 			
-			toTrackableVector.rotate(-angleToY);
 
 			float toTrackableDistance = toTrackableVector.len();
 
 			if (toTrackableDistance <= getMaxDistance()) {
 				trackable.visible = true;
+				
+				toTrackableVector.rotate(-angleToY);
 
-				Vector2 toTrackableNorm = toTrackableVector.cpy().nor();
+				Vector2 toTrackableNorm = toTrackableVector.nor();
 				float toTrackableDistancePixels = toTrackableDistance
 						/ getMaxDistance() * this.width / 2;
 				
