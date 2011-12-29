@@ -29,7 +29,7 @@ public class Missile implements IWorldObject {
 	public static float Range = 5000f;
 
 	private float mLastUpdate = 0.0f;
-	private static float mUpdateInterval = 0.00003f;
+	private static float mUpdateInterval = 0.00000f;
 
 	public Missile(Matrix4 initPosition) {
 		m_combinedMatrix = new Matrix4(initPosition);
@@ -145,7 +145,7 @@ public class Missile implements IWorldObject {
 		Gdx.app.log(TAG, "Speed per sec :" + m_speedPerSec);
 		Vector3 deltaPos = mDirection.cpy().mul(m_speedPerSec * deltaSec);
 		mLocation.add(deltaPos);
-		m_combinedMatrix.trn(deltaPos);
+		m_combinedMatrix.trn(mLocation);
 
 		if (m_tracking && distanceToTarget < 10) {
 			Gdx.app.log(TAG, "HIT!!!!!!!!!!!!!");
@@ -163,16 +163,9 @@ public class Missile implements IWorldObject {
 
 		gl.glMultMatrixf(m_combinedMatrix.val, 0);
 
-		 //gl.glDisable(GL10.GL_TEXTURE);
-
 		m_texture.bind();
 
-		//gl.glColor4f(1, 0, 0, 1);
 		m_mesh.render(GL10.GL_TRIANGLES);
-
-		//gl.glColor4f(1, 1, 1, 0);
-
-		//gl.glEnable(GL10.GL_TEXTURE);
 
 		gl.glPopMatrix();
 	}
@@ -183,12 +176,10 @@ public class Missile implements IWorldObject {
 	}
 
 	public Vector3 getLocation() {
-
-		return mLocation;
+		return mLocation.cpy();
 	}
 
 	public Vector3 getDirection() {
-		// TODO Auto-generated method stub
-		return mDirection;
+		return mDirection.cpy();
 	}
 }

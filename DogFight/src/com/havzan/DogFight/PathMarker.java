@@ -58,7 +58,7 @@ public class PathMarker {
 		m_lastPos = vec.cpy();
 	}
 	
-	void Render(Matrix4 projection)
+	void Render()
 	{
 		GL10 gl = Gdx.graphics.getGL10();
 

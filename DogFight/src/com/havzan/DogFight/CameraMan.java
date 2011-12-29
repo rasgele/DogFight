@@ -1,5 +1,6 @@
 package com.havzan.DogFight;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 
@@ -7,42 +8,96 @@ public class CameraMan {
 	private PerspectiveCamera mCamera;
 	private IWorldObject mTrackedObjFrom = null;
 	private IWorldObject mTrackedObjTo = null;
-	private int mCameraMode = NONE;
+	private CameraMode mMode = CameraMode.NONE;
 
-	public float trackOffsetX = 10;
-	public float trackOffsetY = -30;
-	public float trackOffsetZ = -30;
+	public float trackOffsetDist = 10;
+	public float trackOffsetLeft = -30;
+	public float trackOffsetHeight = -30;
 
-	final static int NONE = 0;
-	final static int TRACKMODE = 1;
-	final static int FROMTOMODE = 2;
+	public float mDistanceToTrack = 20;
+
+	public enum CameraMode {
+		NONE, TRACKMODE, FROMTOMODE
+	}
 
 	public CameraMan(PerspectiveCamera camera) {
-		mCamera = camera;
+		setCamera(camera);
 	}
 
 	public void trackMode(IWorldObject objToTrack) {
 		mTrackedObjFrom = objToTrack;
+		mMode = CameraMode.TRACKMODE;
 	}
 
 	public void fromToMode(IWorldObject objFrom, IWorldObject objTo) {
 		mTrackedObjFrom = objFrom;
 		mTrackedObjTo = objTo;
+		mMode = CameraMode.FROMTOMODE;
 	}
 
-	public void update(float deltaTime) {
-		switch (mCameraMode) {
+	public PerspectiveCamera update(float deltaTime) {
+		switch (getMode()) {
 		case TRACKMODE: {
+
+			Vector3 trackPos = mTrackedObjFrom.getLocation();
+			Vector3 trackDir = mTrackedObjFrom.getDirection().tmp().nor();
 			
-			Vector3 trackToPos = mTrackedObjFrom.getLocation();
-			Vector3 trackToDir = mTrackedObjFrom.getDirection();
+			Gdx.app.log("CAMMAN", "TRACKDIR :" + trackDir);
+
+			getCamera().position.set(calculateCamPos(trackPos, trackDir));
+
+			getCamera().direction.set(trackDir);
 			
-			float distanceToCraft = 50;
-			mCamera.position.set(trackToPos.x + trackToDir.x * distanceToCraft,
-					trackToPos.y + trackToDir.y * distanceToCraft,
-					trackToPos.z + trackToDir.z * distanceToCraft);
-			mCamera.direction.set(trackToDir);
+			Gdx.app.log("CAMMAN", trackPos.tmp().sub(getCamera().position).toString());
+			
+			break;
+		}
+		case FROMTOMODE: {
+			Vector3 trackFromPos = mTrackedObjFrom.getLocation();
+			Vector3 fromToToDir = mTrackedObjTo.getLocation().tmp().sub(mTrackedObjFrom.getLocation()).nor();
+			
+			Gdx.app.log("CAMMAN", "From Pos : " + trackFromPos);
+			Gdx.app.log("CAMMAN", "Dir : " + fromToToDir);
+
+			Gdx.app.log("CAMMAN", "Dir : " + fromToToDir);
+			
+			mCamera.position.set(calculateCamPos(trackFromPos, fromToToDir));
+			
+			Gdx.app.log("CAMMAN", "Cam Pos" + mCamera.position);
+			
+			mCamera.direction.set(fromToToDir);
+			
+			
+			
+			break;
 		}
 		}
+		
+		mCamera.update();
+		return mCamera;
+	}
+
+	private Vector3 calculateCamPos(Vector3 trackPos, Vector3 trackDir) {
+		float distanceToCraft = mDistanceToTrack;
+
+		return new Vector3(trackPos.x - trackDir.x * distanceToCraft,
+				trackPos.y - trackDir.y * distanceToCraft, trackPos.z
+						- trackDir.z * distanceToCraft);
+	}
+
+	public PerspectiveCamera getCamera() {
+		return mCamera;
+	}
+
+	public void setCamera(PerspectiveCamera mCamera) {
+		this.mCamera = mCamera;
+	}
+
+	public CameraMode getMode() {
+		return mMode;
+	}
+
+	public void setMode(CameraMode mMode) {
+		this.mMode = mMode;
 	}
 }

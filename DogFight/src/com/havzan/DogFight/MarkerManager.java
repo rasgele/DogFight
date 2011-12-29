@@ -34,10 +34,10 @@ public class MarkerManager {
 		}
 	}
 	
-	public void render(Matrix4 projection){
+	public void render(){
 		for (Map.Entry<IWorldObject, PathMarker> entry : mObjectToMarkerMap
 				.entrySet()) {
-			entry.getValue().Render(projection);
+			entry.getValue().Render();
 		}
 	}
 

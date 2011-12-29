@@ -22,9 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.havzan.DogFight.CameraMan.CameraMode;
 
 public class DogFightGame implements ApplicationListener, InputProcessor {
-	PerspectiveCamera cam;
+	CameraMan mCamMan;
 	Mesh mesh;
 	Mesh grass;
 	Texture texture;
@@ -87,7 +88,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 				Gdx.files.internal("data/greenchecker.png"), true);
 		grassTexture.setFilter(TextureFilter.Linear, TextureFilter.MipMapNearestNearest);
 
-		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(),
+		PerspectiveCamera cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 
 		cam.far = 20000;
@@ -95,6 +96,9 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		cam.position.set(aircraft.getDirection().x, 0, 30);
 		cam.direction.set(1, 0, 0);
 		cam.up.set(0, 0, 1);
+		
+		mCamMan = new CameraMan(cam);
+		mCamMan.trackMode(aircraft);
 
 		font = new BitmapFont();
 		batch = new SpriteBatch();
@@ -149,7 +153,18 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 			public void click(Actor actor) {
 				actor.action(RotateBy.$(360, 0.4f));
 				cameraMode = (cameraMode + 1) % MAX_CAM_MODE;
-				setCameraMode();
+
+				if (mCamMan.getMode() == CameraMode.TRACKMODE)
+				{
+					if (missile != null)
+						mCamMan.fromToMode(missile, droneCraft);
+					else 
+						mCamMan.fromToMode(aircraft, droneCraft);
+				}
+				else
+				{
+					mCamMan.trackMode(aircraft);
+				}
 			}
 		});
 
@@ -172,9 +187,9 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 					MarkerManager.getInstance().unregisterMarker(missile);
 				missile = aircraft.fireTo(droneCraft);
 				MarkerManager.getInstance().registerMarker(missile);
+				mCamMan.mDistanceToTrack = 10;
+				mCamMan.trackMode(missile);
 				cameraMode = 4;
-				setCameraMode();
-
 			}
 		});
 
@@ -238,11 +253,13 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		initialRoll = Gdx.input.getPitch();
 		initialPitch = Gdx.input.getRoll();
 	}
-
+	float mRenderTime = 0;
 	@Override
 	public void render() {
 
-		float deltaTime = Gdx.graphics.getDeltaTime();
+		mRenderTime += Gdx.graphics.getDeltaTime();
+
+		float deltaTime = 15f/1000f;
 
 		GL10 gl = Gdx.graphics.getGL10();
 
@@ -255,11 +272,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		gl.glEnable(GL10.GL_COLOR_MATERIAL);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
-		setCameraMode();
-		cam.update();
-		cam.apply(gl);
 
-		aircraft.setThrust(slider.getPosition());
 
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
@@ -288,16 +301,20 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		aircraft.SetLean((pitch - initialRoll) / 45);
 		aircraft.SetPull((roll - initialPitch) / 30);
 
-		aircraft.Update(deltaTime);
-		aircraft.Render();
+		aircraft.setThrust(slider.getPosition());
 
+		aircraft.Update(deltaTime);
 		droneCraft.Update(deltaTime);
-		droneCraft.Render();
 
 		if (missile != null) {
 			missile.Update(deltaTime);
-			missile.Render();
 		}
+
+		mCamMan.update(deltaTime).apply(gl);
+		
+		droneCraft.Render();
+		aircraft.Render();
+		if (missile != null) missile.Render();
 
 		renderTerrain(gl);
 		renderMarker();
@@ -340,7 +357,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 	private void renderMarker() {
 		if (mShowMarker) {
 			MarkerManager.getInstance().updateMarkers();
-			MarkerManager.getInstance().render(cam.projection);
+			MarkerManager.getInstance().render();
 		}
 	}
 
@@ -355,89 +372,89 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		gl.glPopMatrix();
 	}
 
-	private void setCameraMode() {
-		if (cameraMode == 0) {
-			Vector3 aircraftPos = aircraft.getLocation();
-			Vector3 aircraftDir = aircraft.getDirection();
-			float distanceToCraft = 50;
-			cam.position.set(aircraftPos.x - aircraftDir.x * distanceToCraft,
-					aircraftPos.y - aircraftDir.y * distanceToCraft,
-					aircraftPos.z - aircraftDir.z * distanceToCraft);
-			cam.direction.set(aircraftDir);
-		} else if (cameraMode == 1) {
-			final float maxDistance = 30;
-
-			Vector3 camToaircraft = aircraft.getLocation().cpy()
-					.sub(cam.position);
-			Vector3 camToCraftVec = camToaircraft.cpy().nor();
-
-			float distance = camToaircraft.len();
-
-			if (distance > maxDistance) {
-				cam.position.add(camToCraftVec.mul(distance - maxDistance));
-			}
-			cam.direction.set(camToCraftVec);
-		} else if (cameraMode == 2) {
-			float maxLenghth2 = 60 * 60;
-
-			Vector3 delta = aircraft.getLocation().cpy().sub(cam.position);
-
-			if (delta.len2() > maxLenghth2) {
-				Vector3 newPos = aircraft.getLocation().cpy()
-						.add(aircraft.getDirection().cpy().mul(40));
-				cam.position.set(newPos);
-			}
-
-			Vector3 camDir = aircraft.getLocation().cpy().sub(cam.position)
-					.nor();
-			cam.direction.set(camDir);
-		} else if (cameraMode == 3) {
-			final float MaxDistance = 100;
-			final float maxLenghth2 = MaxDistance * MaxDistance;
-
-			Vector3 delta = aircraft.getLocation().cpy().sub(cam.position);
-
-			if (delta.len2() > maxLenghth2) {
-				float distance = delta.len();
-				float deltaDistance = distance - MaxDistance;
-
-				Vector3 camDir = aircraft.getLocation().tmp()
-						.sub(cam.position).nor();
-				cam.direction.set(camDir);
-
-				cam.position.add(cam.direction.cpy().mul(deltaDistance));
-			} else {
-				Vector3 camDir = aircraft.getLocation().tmp()
-						.sub(cam.position).nor();
-				cam.direction.set(camDir);
-			}
-
-		} else if (cameraMode == 4) {
-			if (missile == null) {
-				cameraMode = 0;
-				setCameraMode();
-				return;
-			}
-			Vector3 missilePos = missile.getLocation();
-			Vector3 missileDir = missile.getDirection().mul(-1);
-
-			Vector3 missileToAirCraft = droneCraft.getLocation().tmp()
-					.sub(missilePos).nor();
-
-			float distanceToCraft = 20;
-			
-			cam.position.set(missilePos.x - missileDir.x
-					* distanceToCraft, missilePos.y - missileDir.y
-					* distanceToCraft, missilePos.z - missileDir.z
-					* distanceToCraft);
-			
+//	private void setCameraMode() {
+//		if (cameraMode == 0) {
+//			Vector3 aircraftPos = aircraft.getLocation();
+//			Vector3 aircraftDir = aircraft.getDirection();
+//			float distanceToCraft = 50;
+//			cam.position.set(aircraftPos.x - aircraftDir.x * distanceToCraft,
+//					aircraftPos.y - aircraftDir.y * distanceToCraft,
+//					aircraftPos.z - aircraftDir.z * distanceToCraft);
+//			cam.direction.set(aircraftDir);
+//		} else if (cameraMode == 1) {
+//			final float maxDistance = 30;
+//
+//			Vector3 camToaircraft = aircraft.getLocation().cpy()
+//					.sub(cam.position);
+//			Vector3 camToCraftVec = camToaircraft.cpy().nor();
+//
+//			float distance = camToaircraft.len();
+//
+//			if (distance > maxDistance) {
+//				cam.position.add(camToCraftVec.mul(distance - maxDistance));
+//			}
+//			cam.direction.set(camToCraftVec);
+//		} else if (cameraMode == 2) {
+//			float maxLenghth2 = 60 * 60;
+//
+//			Vector3 delta = aircraft.getLocation().cpy().sub(cam.position);
+//
+//			if (delta.len2() > maxLenghth2) {
+//				Vector3 newPos = aircraft.getLocation().cpy()
+//						.add(aircraft.getDirection().cpy().mul(40));
+//				cam.position.set(newPos);
+//			}
+//
+//			Vector3 camDir = aircraft.getLocation().cpy().sub(cam.position)
+//					.nor();
+//			cam.direction.set(camDir);
+//		} else if (cameraMode == 3) {
+//			final float MaxDistance = 100;
+//			final float maxLenghth2 = MaxDistance * MaxDistance;
+//
+//			Vector3 delta = aircraft.getLocation().cpy().sub(cam.position);
+//
+//			if (delta.len2() > maxLenghth2) {
+//				float distance = delta.len();
+//				float deltaDistance = distance - MaxDistance;
+//
+//				Vector3 camDir = aircraft.getLocation().tmp()
+//						.sub(cam.position).nor();
+//				cam.direction.set(camDir);
+//
+//				cam.position.add(cam.direction.cpy().mul(deltaDistance));
+//			} else {
+//				Vector3 camDir = aircraft.getLocation().tmp()
+//						.sub(cam.position).nor();
+//				cam.direction.set(camDir);
+//			}
+//
+//		} else if (cameraMode == 4) {
+//			if (missile == null) {
+//				cameraMode = 0;
+//				setCameraMode();
+//				return;
+//			}
+//			Vector3 missilePos = missile.getLocation();
+//			Vector3 missileDir = missile.getDirection().mul(-1);
+//
+//			Vector3 missileToAirCraft = droneCraft.getLocation().tmp()
+//					.sub(missilePos).nor();
+//
+//			float distanceToCraft = 20;
+//			
+//			cam.position.set(missilePos.x - missileDir.x
+//					* distanceToCraft, missilePos.y - missileDir.y
+//					* distanceToCraft, missilePos.z - missileDir.z
+//					* distanceToCraft);
+//			
 //			cam.position.set(missilePos.x - missileToAirCraft.x
 //					* distanceToCraft, missilePos.y - missileToAirCraft.y
 //					* distanceToCraft, missilePos.z - missileToAirCraft.z
 //					* distanceToCraft);
-			cam.direction.set(missileToAirCraft);
-		}
-	}
+//			cam.direction.set(missileToAirCraft);
+//		}
+//	}
 
 	@Override
 	public boolean keyDown(int keycode) {
