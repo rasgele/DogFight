@@ -21,7 +21,7 @@ public class Missile implements IWorldObject {
 
 	private float m_speedPerSec = 0;
 	private static float MaxRotationPerSecond = 90;
-	private final double MaxTrackingAngle = Math.PI / 3;
+	private final double MaxTrackingAngle = Math.PI / 6;
 	private Matrix4 m_combinedMatrix;
 
 	private IWorldObject m_target = null;

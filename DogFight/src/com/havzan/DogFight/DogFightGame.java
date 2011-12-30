@@ -156,13 +156,17 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 				if (mCamMan.getMode() == CameraMode.TRACKMODE)
 				{
 					if (missile != null)
-						mCamMan.fromToMode(missile, droneCraft);
-					else 
+						{mCamMan.fromToMode(missile, droneCraft);
+						mCamMan.mDistanceToTrack = 10;}
+					else{ 
 						mCamMan.fromToMode(aircraft, droneCraft);
+						mCamMan.mDistanceToTrack = 50;
+					}
 				}
 				else
 				{
 					mCamMan.trackMode(aircraft);
+					mCamMan.mDistanceToTrack = 50;
 				}
 			}
 		});
@@ -186,7 +190,10 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 					MarkerManager.getInstance().unregisterMarker(missile);
 				missile = aircraft.fireTo(droneCraft);
 				MarkerManager.getInstance().registerMarker(missile);
-				mCamMan.fromToMode(missile, droneCraft);
+				
+				if (missile != null)
+				{mCamMan.fromToMode(missile, droneCraft);
+				mCamMan.mDistanceToTrack = 10;}
 			}
 		});
 
