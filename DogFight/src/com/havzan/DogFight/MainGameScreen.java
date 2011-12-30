@@ -5,8 +5,11 @@ import com.badlogic.gdx.Screen;
 public class MainGameScreen implements Screen {
 
 	DogFightGame mGame;
+	World mWorld;
+	
 	public MainGameScreen(DogFightGame game) {
 		mGame = game;
+		mWorld = new World();
 	}
 
 	@Override

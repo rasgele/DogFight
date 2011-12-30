@@ -143,7 +143,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		TextureParameter para = new TextureLoader.TextureParameter();
 		para.genMipMaps = true;
 
-		mAssetManager.load("data/camo.jpg", Texture.class);
+		mAssetManager.load("data/camo.jpg", Texture.class, para);
 		mAssetManager.load("data/checkerBigg.jpg", Texture.class, para);
 
 		para = new TextureLoader.TextureParameter();
@@ -167,8 +167,8 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		mAssetManager.load("data/ui/sliderHandle.png", Texture.class);
 		mAssetManager.load("data/ui/switchCam.png", Texture.class);
 		mAssetManager.load("data/ui/switchCamPressed.png", Texture.class);
-		mAssetManager.load("data/ui/togCam.png", Texture.class);
-		mAssetManager.load("data/ui/togCamPressed.png", Texture.class);
+		mAssetManager.load("data/ui/togMarkerPressed.png", Texture.class);
+		mAssetManager.load("data/ui/togMarker.png", Texture.class);
 
 		mAssetManager.finishLoading();
 
