@@ -1,6 +1,7 @@
 package com.havzan.DogFight;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,6 +52,15 @@ public class Aircraft implements IWorldObject {
 		m_combinedMatrix = pitchMatrix;
 	}
 
+	public void Create(AssetManager mAssetManager) {
+		mMesh = ObjLoader.loadObj(Gdx.files.internal("data/plane.obj")
+				.read());
+		Gdx.app.log("ObjTest", "obj bounds: " + mMesh.calculateBoundingBox());
+		
+		mTexture = mAssetManager.get("data/camo.jpg", Texture.class);
+		mTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+		
+	}
 	void Create() {
 		mMesh = ObjLoader.loadObj(Gdx.files.internal("data/plane.obj")
 				.read());
@@ -156,5 +166,4 @@ public class Aircraft implements IWorldObject {
 	public Vector3 getDirection() {
 		return mDirection;
 	}
-
 }

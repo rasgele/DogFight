@@ -1,6 +1,7 @@
 package com.havzan.DogFight;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Mesh;
@@ -16,11 +17,18 @@ public class SkyBox
 {
 	private Mesh m_mesh;
 	private Texture m_texture;
-	private Vector3 m_camDirection;
+	
+	public void create(AssetManager mAssetManager) {	
+		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/sky.obj").read());	
+
+		m_texture = mAssetManager.get("data/skybox.png", Texture.class);
+		
+		m_texture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		m_texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
+	}
+	
 	void create()
 	{
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/sky.obj").read());
 		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
 		m_texture = new Texture(Gdx.files.internal("data/skybox.png"), true);
 		
@@ -30,7 +38,6 @@ public class SkyBox
 	
 	void setCameraDirection(Vector3 vector)
 	{
-		m_camDirection = vector;
 	}
 	
 	void render(PerspectiveCamera cam)
