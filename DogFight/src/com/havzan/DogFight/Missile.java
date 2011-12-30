@@ -56,7 +56,7 @@ public class Missile implements IWorldObject {
 		m_tracking = true;
 	}
 
-	void Update(float deltaSec) {
+	void update(float deltaSec) {
 		if (!m_tracking)
 			return;
 

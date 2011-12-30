@@ -75,7 +75,7 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 		createUI(mAssetManager);
 
 		aircraft = new Aircraft();
-		aircraft.Create(mAssetManager);
+		aircraft.create(mAssetManager);
 		aircraft.getLocation().set(0, 0, 2000);
 
 		droneCraft = new Aircraft(90, 0);
@@ -351,11 +351,11 @@ public class DogFightGame implements ApplicationListener, InputProcessor {
 
 		aircraft.setThrust(slider.getPosition());
 
-		aircraft.Update(deltaTime);
-		droneCraft.Update(deltaTime);
+		aircraft.update(deltaTime);
+		droneCraft.update(deltaTime);
 
 		if (missile != null) {
-			missile.Update(deltaTime);
+			missile.update(deltaTime);
 		}
 
 		mCamMan.update(deltaTime).apply(gl);

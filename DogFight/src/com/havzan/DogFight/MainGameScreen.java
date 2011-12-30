@@ -10,11 +10,11 @@ public class MainGameScreen implements Screen {
 	public MainGameScreen(DogFightGame game) {
 		mGame = game;
 		mWorld = new World();
+		mWorld.create(mGame.mAssetManager);
 	}
 
 	@Override
 	public void render(float delta) {
-		// TODO Auto-generated method stub
 
 	}
 

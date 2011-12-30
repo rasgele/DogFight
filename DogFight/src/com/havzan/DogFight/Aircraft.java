@@ -52,13 +52,15 @@ public class Aircraft implements IWorldObject {
 		m_combinedMatrix = pitchMatrix;
 	}
 
-	public void Create(AssetManager mAssetManager) {
+	public Aircraft create(AssetManager mAssetManager) {
 		mMesh = ObjLoader.loadObj(Gdx.files.internal("data/plane.obj")
 				.read());
 		Gdx.app.log("ObjTest", "obj bounds: " + mMesh.calculateBoundingBox());
 		
 		mTexture = mAssetManager.get("data/camo.jpg", Texture.class);
 		mTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+		
+		return this;
 		
 	}
 	void Create() {
@@ -69,7 +71,7 @@ public class Aircraft implements IWorldObject {
 		mTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 
-	void Update(float deltaSec) {
+	void update(float deltaSec) {
 		float stepLean = m_lean * m_maxLeanPerSec * deltaSec;
 		float stepPull = m_pull * m_maxPullPerSec * deltaSec;
 

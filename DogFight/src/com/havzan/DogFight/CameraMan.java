@@ -1,6 +1,5 @@
 package com.havzan.DogFight;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 
@@ -15,6 +14,7 @@ public class CameraMan {
 	public float trackOffsetHeight = 15;
 
 	public float mDistanceToTrack = 50;
+	private float mFoV = 45;
 
 	public enum CameraMode {
 		NONE, TRACKMODE, FROMTOMODE
@@ -22,6 +22,10 @@ public class CameraMan {
 
 	public CameraMan(PerspectiveCamera camera) {
 		setCamera(camera);
+	}
+
+	public CameraMan(float width, float height) {
+		mCamera = new PerspectiveCamera(mFoV, width, height);
 	}
 
 	public void trackMode(IWorldObject objToTrack) {
@@ -41,25 +45,27 @@ public class CameraMan {
 
 			Vector3 trackPos = mTrackedObjFrom.getLocation();
 			Vector3 trackDir = mTrackedObjFrom.getDirection().tmp().nor();
-			
-			getCamera().position.set(calculateCamPos(trackPos, trackDir).add(getCamera().up.tmp().mul(trackOffsetHeight)));
+
+			getCamera().position.set(calculateCamPos(trackPos, trackDir).add(
+					getCamera().up.tmp().mul(trackOffsetHeight)));
 
 			getCamera().lookAt(trackPos.x, trackPos.y, trackPos.z);
-			
+
 			break;
 		}
 		case FROMTOMODE: {
 			Vector3 trackFromPos = mTrackedObjFrom.getLocation();
-			Vector3 fromToToDir = mTrackedObjTo.getLocation().tmp().sub(mTrackedObjFrom.getLocation()).nor();
-			
+			Vector3 fromToToDir = mTrackedObjTo.getLocation().tmp()
+					.sub(mTrackedObjFrom.getLocation()).nor();
+
 			mCamera.position.set(calculateCamPos(trackFromPos, fromToToDir));
-			
+
 			mCamera.direction.set(fromToToDir);
-			
+
 			break;
 		}
 		}
-		
+
 		mCamera.update();
 		return mCamera;
 	}
