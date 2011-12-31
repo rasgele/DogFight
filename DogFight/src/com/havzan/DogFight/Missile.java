@@ -43,12 +43,13 @@ public class Missile implements IWorldObject {
 						-mLocation.z)).nor();
 	}
 
-	void Create() {
+	public Missile create() {
 		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/missile.obj")
 				.read());
 		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
 		m_texture = new Texture(Gdx.files.internal("data/camo.jpg"), true);
 		m_texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+		return this;
 	}
 
 	void SetTarget(Aircraft aircraft) {
@@ -128,8 +129,7 @@ public class Missile implements IWorldObject {
 
 				Gdx.app.log(TAG, "Old: " + angleToTarget + " New: "
 						+ newAngleToTarget + " Changed : " + angleChanged
-						+ " RoC : " + rateOfChange + " DeltaRot :"
-						+ deltaRotation + " DR: " + deltaRotation / deltaSec);
+						+ " RoC : " + rateOfChange + "Distance :" + distanceToTarget);
 
 				mDirection.set(direction);
 

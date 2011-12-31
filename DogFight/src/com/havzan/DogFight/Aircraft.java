@@ -153,7 +153,7 @@ public class Aircraft implements IWorldObject {
 		Matrix4 misMtx = m_combinedMatrix.cpy();
 
 		Missile m = new Missile(misMtx);
-		m.Create();
+		m.create();
 		m.SetTarget(aircraft);
 
 		return m;
@@ -167,5 +167,18 @@ public class Aircraft implements IWorldObject {
 	@Override
 	public Vector3 getDirection() {
 		return mDirection;
+	}
+
+	public GameObject getLocked() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Matrix4 getCombinedMatrix() {
+		return m_combinedMatrix;
+	}
+
+	public void setCombinedMatrix(Matrix4 m_combinedMatrix) {
+		this.m_combinedMatrix = m_combinedMatrix;
 	}
 }

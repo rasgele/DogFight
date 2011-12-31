@@ -1,30 +1,20 @@
 package com.havzan.DogFight;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.havzan.DogFight.CameraMan.CameraMode;
 
 public class WorldRenderer {
-	WorldRenderer(float width, float height) {
-		mWidth = width;
-		mHeight = height;
-	}
-
-	Stage mUI;
+	private IWorldPresenter mPresenter;
+	private Stage mUI;
 	private Slider mSlider;
 	private Radar mRadar;
 	private Button mCameraSwitchButton;
@@ -35,6 +25,19 @@ public class WorldRenderer {
 	private Button mFireButton;
 	private Button mMarkerToggleButton;
 	protected boolean mShowMarker = false;
+	
+	interface IWorldPresenter {
+		void onMissileFire();
+		void onCameraSwitch();
+		void onMarkerToggle();
+	}
+
+	
+	WorldRenderer(IWorldPresenter presenter, float width, float height) {
+		mWidth = width;
+		mHeight = height;
+		mPresenter = presenter;
+	}
 
 	public void create() {
 		mCamMan = new CameraMan(mWidth, mHeight);
@@ -48,7 +51,7 @@ public class WorldRenderer {
 
 		mRadar = new Radar("radar");
 
-		mCameraSwitchButton = new Button(createDefaultButtonStyle(
+		mCameraSwitchButton = new Button(ButtonStyleHelper.createDefaultButtonStyle(
 				"data/ui/switchCamPressed.png", "data/ui/switchCam.png"));
 
 		mCameraSwitchButton.width = mCameraSwitchButton.getPrefWidth();
@@ -57,6 +60,7 @@ public class WorldRenderer {
 		mCameraSwitchButton.setClickListener(new ClickListener() {
 			@Override
 			public void click(Actor actor) {
+				mPresenter.onCameraSwitch();
 				// actor.action(RotateBy.$(360, 0.4f));
 				//
 				// if (mCamMan.getMode() == CameraMode.TRACKMODE) {
@@ -74,13 +78,14 @@ public class WorldRenderer {
 			}
 		});
 
-		mFireButton = new Button(createDefaultButtonStyle("data/ui/firePressed.png", "data/ui/fire.png"));
+		mFireButton = new Button(ButtonStyleHelper.createDefaultButtonStyle(
+				"data/ui/firePressed.png", "data/ui/fire.png"));
 
 		mFireButton.setClickListener(new ClickListener() {
 			@Override
 			public void click(Actor actor) {
 				actor.action(RotateBy.$(360, 0.4f));
-
+				mPresenter.onMissileFire();
 				// if (missile != null)
 				// MarkerManager.getInstance().unregisterMarker(missile);
 				// missile = aircraft.fireTo(droneCraft);
@@ -93,12 +98,13 @@ public class WorldRenderer {
 			}
 		});
 
-		mMarkerToggleButton = new Button(createDefaultButtonStyle("data/ui/togMarkerPressed.png", "data/ui/togMarker.png"));
+		mMarkerToggleButton = new Button(ButtonStyleHelper.createDefaultButtonStyle(
+				"data/ui/togMarkerPressed.png", "data/ui/togMarker.png"));
 		mMarkerToggleButton.setClickListener(new ClickListener() {
 			@Override
 			public void click(Actor actor) {
 				actor.action(RotateBy.$(360, 0.4f));
-				mShowMarker = !mShowMarker;
+				mPresenter.onMarkerToggle();
 			}
 		});
 
@@ -132,21 +138,7 @@ public class WorldRenderer {
 		mUI.addActor(rootTable);
 	}
 
-	private ButtonStyle createDefaultButtonStyle(String pressed, String normal) {
-		return createDefaultButtonStyle(Assets.getTexture(pressed), Assets.getTexture(normal));
-	}
-
-	private ButtonStyle createDefaultButtonStyle(Texture pressed, Texture normal) {
-		NinePatch down = new NinePatch(pressed, 0, pressed.getWidth(), 0,
-				pressed.getHeight());
-		NinePatch up = new NinePatch(normal, 0, normal.getWidth(), 0,
-				normal.getHeight());
-
-		return new Button.ButtonStyle(down, up, null, 0f, 0f, 0f, 0.0f, null,
-				Color.BLACK);
-	}
-
 	public void render() {
-
+		
 	}
 }
