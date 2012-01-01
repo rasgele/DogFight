@@ -1,18 +1,28 @@
 package com.havzan.DogFight;
 
+import java.util.Collection;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.havzan.DogFight.World.IWorldEventListener;
 
 public class WorldRenderer {
+	private static final String TAG = "RENDERER";
 	private IWorldPresenter mPresenter;
 	private Stage mUI;
 	private Slider mSlider;
@@ -25,23 +35,70 @@ public class WorldRenderer {
 	private Button mFireButton;
 	private Button mMarkerToggleButton;
 	protected boolean mShowMarker = false;
-	
+	private World mWorld;
+
+	float[] lightColor = { 1, 1, 1, 0 };
+	float[] lightPosition = { 2, 5, 10, 0 };
+	private float mInitialRoll;
+	private float mInitialPitch;
+	private Vector3 mTouchPoint = new Vector3();
+
+	private HUD mHUD;
+
 	interface IWorldPresenter {
 		void onMissileFire();
+
 		void onCameraSwitch();
+
 		void onMarkerToggle();
 	}
 
-	
-	WorldRenderer(IWorldPresenter presenter, float width, float height) {
+	public WorldRenderer(IWorldPresenter presenter, World world, float width,
+			float height) {
 		mWidth = width;
 		mHeight = height;
 		mPresenter = presenter;
+		mWorld = world;
+
+		mWorld.setWorldEventListener(new IWorldEventListener() {
+
+			@Override
+			public void aircraftAdded(Aircraft aircraft) {
+				mRadar.addObjectToTrack(aircraft);
+			}
+
+			@Override
+			public void missileAdded(Missile missile) {
+				mRadar.addObjectToTrack(missile);
+			}
+
+			@Override
+			public void aircraftRemoved(Aircraft aircraft) {
+				mRadar.removeObjectToTrack(aircraft);
+
+			}
+
+			@Override
+			public void missileRemoved(Missile missile) {
+				mRadar.removeObjectToTrack(missile);
+			}
+		});
 	}
 
-	public void create() {
+	public WorldRenderer create() {
 		mCamMan = new CameraMan(mWidth, mHeight);
+		mCamMan.trackMode(mWorld.getPlayer());
 		createUI();
+		Gdx.input.setInputProcessor(mUI);
+
+		for (Aircraft a : mWorld.getAircrafts()) {
+			mRadar.addObjectToTrack(a);
+		}
+
+		for (Missile m : mWorld.getMissiles()) {
+			mRadar.addObjectToTrack(m);
+		}
+		return this;
 	}
 
 	private void createUI() {
@@ -50,9 +107,13 @@ public class WorldRenderer {
 		mSlider = new Slider("slider");
 
 		mRadar = new Radar("radar");
+		mRadar.setReference(mWorld.getPlayer());
 
-		mCameraSwitchButton = new Button(ButtonStyleHelper.createDefaultButtonStyle(
-				"data/ui/switchCamPressed.png", "data/ui/switchCam.png"));
+		mCameraSwitchButton = new Button(
+				ButtonStyleHelper
+						.createDefaultButtonStyle(
+								"data/ui/switchCamPressed.png",
+								"data/ui/switchCam.png"));
 
 		mCameraSwitchButton.width = mCameraSwitchButton.getPrefWidth();
 		mCameraSwitchButton.height = mCameraSwitchButton.getPrefHeight();
@@ -98,8 +159,11 @@ public class WorldRenderer {
 			}
 		});
 
-		mMarkerToggleButton = new Button(ButtonStyleHelper.createDefaultButtonStyle(
-				"data/ui/togMarkerPressed.png", "data/ui/togMarker.png"));
+		mMarkerToggleButton = new Button(
+				ButtonStyleHelper
+						.createDefaultButtonStyle(
+								"data/ui/togMarkerPressed.png",
+								"data/ui/togMarker.png"));
 		mMarkerToggleButton.setClickListener(new ClickListener() {
 			@Override
 			public void click(Actor actor) {
@@ -135,10 +199,184 @@ public class WorldRenderer {
 
 		rootTable.debug("all");
 
-		mUI.addActor(rootTable);
+		mHUD = new HUD();
+
+		mHUD.addActor(rootTable);
+
+		mUI.addActor(mHUD);
 	}
 
-	public void render() {
-		
+	public void render(float deltaTime) {
+		GL10 gl = Gdx.graphics.getGL11();
+
+		gl.glClearColor(.2f, .4f, 1, 1);
+		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+
+		gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glEnable(GL10.GL_COLOR_MATERIAL);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
+
+		gl.glEnable(GL10.GL_LIGHT0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
+		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
+
+		setupCamera(deltaTime, gl);
+		renderTerrain(gl);
+		renderAircrafts(gl);
+		renderMissiles(gl);
+		renderHUD();
+		renderUI(deltaTime);
+	}
+
+	private void renderTerrain(GL10 gl) {
+		gl.glPushMatrix();
+		gl.glScalef(10000, 10000, 10000);
+
+		Assets.getTerrainTexture().bind();
+
+		Assets.getTerrainModel().render(GL10.GL_TRIANGLES);
+
+		gl.glPopMatrix();
+
+	}
+
+	private void renderUI(float deltaTime) {
+		mUI.act(deltaTime);
+		mUI.draw();
+	}
+
+	private void renderHUD() {
+		// TODO Auto-generated method stub
+		Aircraft player = mWorld.getPlayer();
+
+		Collection<Aircraft> trackables = mWorld.getAircrafts();
+		BoundingBox box = new BoundingBox();
+		Assets.getAircraftModel().calculateBoundingBox(box);
+
+		PerspectiveCamera cam = mCamMan.getCamera();
+
+		Aircraft locked = player.getLocked();
+
+		mHUD.mPosition.clear();
+
+		for (Aircraft trackable : trackables) {
+			Vector3 proj = trackable.getLocation().cpy();
+			cam.project(proj);
+
+			//Gdx.app.log(TAG, "Window " + proj);
+			if (proj.z < 1.0f) {
+				HUD.TrackData data = new HUD.TrackData();
+				data.mPosition.set(proj.x, proj.y);
+				data.mIsLocked = (trackable == locked);
+				mHUD.mPosition.add(data);
+			}
+
+			// box.mul(trackable.getCombinedMatrix());
+			// if (Intersector.intersectRayBoundsFast(ray, box)){
+			// Gdx.app.log(TAG, "Hit test BB!");
+			// mWorld.setLocked(player, trackable);
+			// }
+		}
+	}
+
+	private void renderMissiles(GL10 gl) {
+		for (Missile missile : mWorld.getMissiles()) {
+			renderMissile(gl, missile);
+		}
+
+	}
+
+	private void renderMissile(GL10 gl, Missile missile) {
+		renderModel(gl, Assets.getMissileModel(), Assets.getMissileTexture(),
+				missile.getCombinedMatrix());
+	}
+
+	private void renderAircrafts(GL10 gl) {
+		Aircraft player = mWorld.getPlayer();
+		renderAircraft(gl, player);
+
+		for (Aircraft aircraft : mWorld.getAircrafts()) {
+			renderAircraft(gl, aircraft);
+		}
+	}
+
+	private void renderAircraft(GL10 gl, Aircraft aircraft) {
+		renderModel(gl, Assets.getAircraftModel(), Assets.getAircraftTexture(),
+				aircraft.getCombinedMatrix());
+	}
+
+	private void renderModel(GL10 gl, Mesh model, Texture texture,
+			Matrix4 matrix) {
+		if (matrix != null) {
+			gl.glPushMatrix();
+
+			gl.glMultMatrixf(matrix.val, 0);
+		}
+
+		if (texture != null)
+			texture.bind();
+
+		model.render(GL10.GL_TRIANGLES);
+		if (matrix != null)
+			gl.glPopMatrix();
+	}
+
+	private void setupCamera(float deltaTime, GL10 gl) {
+		mCamMan.update(deltaTime).apply(gl);
+	}
+
+	public void updateControls() {
+		float azimuth = Gdx.input.getAzimuth();
+		float pitch = Gdx.input.getPitch();
+		float roll = Gdx.input.getRoll();
+
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
+			pitch = -90 + mInitialRoll;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
+			pitch = 90 + mInitialRoll;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
+			roll = 90 + mInitialPitch;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
+			roll = -90 + mInitialPitch;
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.MENU)) {
+			resetInitialOrientation();
+		}
+
+		Aircraft player = mWorld.getPlayer();
+		player.SetLean((pitch - mInitialRoll) / 45);
+		player.SetPull((roll - mInitialPitch) / 30);
+
+		player.setThrust(mSlider.getPosition());
+
+		if (Gdx.input.justTouched()) {
+			mCamMan.getCamera().unproject(
+					mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+			Ray ray = mCamMan.getCamera().getPickRay(Gdx.input.getX(),
+					Gdx.input.getY());
+
+			Collection<Aircraft> trackables = mWorld.getTrackables(player);
+			BoundingBox box = new BoundingBox();
+			Assets.getAircraftModel().calculateBoundingBox(box);
+
+			for (Aircraft trackable : trackables) {
+				box.mul(trackable.getCombinedMatrix());
+				if (Intersector.intersectRayBoundsFast(ray, box)) {
+					Gdx.app.log(TAG, "Hit test BB!");
+					mWorld.setLocked(player, trackable);
+				}
+			}
+		}
+
+	}
+
+	private void resetInitialOrientation() {
+		mInitialRoll = Gdx.input.getPitch();
+		mInitialPitch = Gdx.input.getRoll();
 	}
 }

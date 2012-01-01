@@ -17,7 +17,7 @@ public class CameraMan {
 	private float mFoV = 45;
 
 	public enum CameraMode {
-		NONE, TRACKMODE, FROMTOMODE
+		NONE, TRACKMODE, FRONTOMODE
 	}
 
 	public CameraMan(PerspectiveCamera camera) {
@@ -26,6 +26,10 @@ public class CameraMan {
 
 	public CameraMan(float width, float height) {
 		mCamera = new PerspectiveCamera(mFoV, width, height);
+		mCamera.up.set(0, 0, 1);
+		mCamera.near = 5;
+		mCamera.far = 20000;
+		mCamera.direction.set(1, 0, 0);
 	}
 
 	public void trackMode(IWorldObject objToTrack) {
@@ -36,13 +40,14 @@ public class CameraMan {
 	public void fromToMode(IWorldObject objFrom, IWorldObject objTo) {
 		mTrackedObjFrom = objFrom;
 		mTrackedObjTo = objTo;
-		mMode = CameraMode.FROMTOMODE;
+		mMode = CameraMode.FRONTOMODE;
 	}
 
 	public PerspectiveCamera update(float deltaTime) {
 		switch (getMode()) {
 		case TRACKMODE: {
-
+			if (mTrackedObjFrom == null)
+				break;
 			Vector3 trackPos = mTrackedObjFrom.getLocation();
 			Vector3 trackDir = mTrackedObjFrom.getDirection().tmp().nor();
 
@@ -53,7 +58,7 @@ public class CameraMan {
 
 			break;
 		}
-		case FROMTOMODE: {
+		case FRONTOMODE: {
 			Vector3 trackFromPos = mTrackedObjFrom.getLocation();
 			Vector3 fromToToDir = mTrackedObjTo.getLocation().tmp()
 					.sub(mTrackedObjFrom.getLocation()).nor();

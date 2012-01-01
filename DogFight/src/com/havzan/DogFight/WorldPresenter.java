@@ -8,9 +8,11 @@ public class WorldPresenter implements IWorldPresenter {
 	private World mWorld;
 	private WorldRenderer mWorldRenderer;
 
-	public WorldPresenter() {
-		mWorld = new World();
-		mWorldRenderer = new WorldRenderer(this, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	public WorldPresenter(World world) {
+		mWorld = world;
+		mWorldRenderer = new WorldRenderer(this, mWorld,
+				Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		mWorldRenderer.create();
 	}
 
 	@Override
@@ -25,7 +27,13 @@ public class WorldPresenter implements IWorldPresenter {
 
 	@Override
 	public void onMarkerToggle() {
-		mWorld.setMarkersEnabled(!mWorld.getMarkerseEnabled());
+		mWorld.setMarkersEnabled(!mWorld.getMarkersEnabled());
+	}
+
+	public void render(float delta) {
+		mWorldRenderer.updateControls();
+		mWorld.update(delta);
+		mWorldRenderer.render(delta);
 	}
 
 }

@@ -6,16 +6,18 @@ public class MainGameScreen implements Screen {
 
 	DogFightGame mGame;
 	World mWorld;
-	
+	WorldPresenter mWorldPresenter;
 	public MainGameScreen(DogFightGame game) {
 		mGame = game;
+		
 		mWorld = new World();
-		mWorld.create(mGame.mAssetManager);
+		mWorld.create();
+		mWorldPresenter = new WorldPresenter(mWorld);
 	}
 
 	@Override
 	public void render(float delta) {
-
+		mWorldPresenter.render(delta);
 	}
 
 	@Override

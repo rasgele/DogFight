@@ -22,7 +22,7 @@ public class Missile implements IWorldObject {
 	private float m_speedPerSec = 0;
 	private static float MaxRotationPerSecond = 90;
 	private final double MaxTrackingAngle = Math.PI / 6;
-	private Matrix4 m_combinedMatrix;
+	private Matrix4 mCombinedMatrix;
 
 	private IWorldObject m_target = null;
 	private boolean m_tracking = false;
@@ -33,13 +33,13 @@ public class Missile implements IWorldObject {
 	private static float mUpdateInterval = 0.00000f;
 
 	public Missile(Matrix4 initPosition) {
-		m_combinedMatrix = new Matrix4(initPosition);
-		mLocation = new Vector3(m_combinedMatrix.val[Matrix4.M03],
-				m_combinedMatrix.val[Matrix4.M13],
-				m_combinedMatrix.val[Matrix4.M23]);
+		mCombinedMatrix = new Matrix4(initPosition);
+		mLocation = new Vector3(mCombinedMatrix.val[Matrix4.M03],
+				mCombinedMatrix.val[Matrix4.M13],
+				mCombinedMatrix.val[Matrix4.M23]);
 
 		mDirection = new Vector3(1, 0, 0).mul(
-				m_combinedMatrix.cpy().trn(-mLocation.x, -mLocation.y,
+				mCombinedMatrix.cpy().trn(-mLocation.x, -mLocation.y,
 						-mLocation.z)).nor();
 	}
 
@@ -108,10 +108,10 @@ public class Missile implements IWorldObject {
 				Matrix4 rotationMtx = new Matrix4();
 				rotationMtx.setToRotation(rotationAxis, deltaRotation);
 
-				Matrix4 combinedRotation = new Matrix4(m_combinedMatrix);
-				combinedRotation.trn(-m_combinedMatrix.val[Matrix4.M03],
-						-m_combinedMatrix.val[Matrix4.M13],
-						-m_combinedMatrix.val[Matrix4.M23]);
+				Matrix4 combinedRotation = new Matrix4(mCombinedMatrix);
+				combinedRotation.trn(-mCombinedMatrix.val[Matrix4.M03],
+						-mCombinedMatrix.val[Matrix4.M13],
+						-mCombinedMatrix.val[Matrix4.M23]);
 
 				rotationMtx.mul(combinedRotation);
 
@@ -133,7 +133,7 @@ public class Missile implements IWorldObject {
 
 				mDirection.set(direction);
 
-				m_combinedMatrix.set(rotationMtx);
+				mCombinedMatrix.set(rotationMtx);
 
 			}
 			mLastUpdate = 0;
@@ -148,7 +148,7 @@ public class Missile implements IWorldObject {
 			Vector3 deltaPos = mDirection.cpy().mul(m_speedPerSec * deltaSec);
 
 			mLocation.add(deltaPos);
-			m_combinedMatrix.trn(mLocation);
+			mCombinedMatrix.trn(mLocation);
 		}
 		if (m_tracking && distanceToTarget < 10) {
 			Gdx.app.log(TAG, "HIT!!!!!!!!!!!!!");
@@ -163,7 +163,7 @@ public class Missile implements IWorldObject {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glPushMatrix();
 
-		gl.glMultMatrixf(m_combinedMatrix.val, 0);
+		gl.glMultMatrixf(mCombinedMatrix.val, 0);
 
 		m_texture.bind();
 
@@ -183,5 +183,9 @@ public class Missile implements IWorldObject {
 
 	public Vector3 getDirection() {
 		return mDirection.cpy();
+	}
+
+	public Matrix4 getCombinedMatrix() {
+		return mCombinedMatrix;
 	}
 }

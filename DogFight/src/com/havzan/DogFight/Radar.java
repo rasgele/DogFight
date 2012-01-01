@@ -1,6 +1,7 @@
 package com.havzan.DogFight;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.actors.Image;
 public class Radar extends Group {
 	private Image mBackImage;
 	private IWorldObject mReference;
-	ArrayList<TrackableData> mTrackables = new ArrayList<TrackableData>();
+	Set<TrackableData> mTrackables = new HashSet<TrackableData>();
 
 	Texture mTrackableTex;
 	private final String TAG = "Radar";
@@ -67,8 +68,8 @@ public class Radar extends Group {
 		super.draw(batch, parentAlpha);
 		update();
 		
-		float texWid = 8;
-		float texHei = 8;
+		float texWid = 4;
+		float texHei = 4;
 
 		float offsetX = this.x + this.width / 2 - texWid / 2;
 		float offsetY = this.y + this.height / 2 - texHei / 2;
@@ -77,7 +78,7 @@ public class Radar extends Group {
 
 			if (trackable.visible) {
 				batch.draw(mTrackableTex, trackable.x + offsetX, trackable.y
-						+ offsetY, 4, 4, 0, 0, texWid, texHei);
+						+ offsetY, texWid, texHei);
 			}
 		}
 	}
@@ -92,6 +93,10 @@ public class Radar extends Group {
 		data.image = new Image("image", mTrackableTex);
 
 		mTrackables.add(data);
+	}
+	
+	public void removeObjectToTrack(IWorldObject worldObj) {
+		mTrackables.remove(worldObj);
 	}
 
 	public void update() {

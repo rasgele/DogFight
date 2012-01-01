@@ -28,6 +28,8 @@ public class Aircraft implements IWorldObject {
 
 	private static float MaxSpeedPerSec = 400;
 	private static float MinSpeedPerSec = 0;
+	
+	private Aircraft mLocked = null;
 
 	Aircraft() {
 	}
@@ -50,25 +52,6 @@ public class Aircraft implements IWorldObject {
 		pitchMatrix.mul(rollMatrix);
 		
 		m_combinedMatrix = pitchMatrix;
-	}
-
-	public Aircraft create(AssetManager mAssetManager) {
-		mMesh = ObjLoader.loadObj(Gdx.files.internal("data/plane.obj")
-				.read());
-		Gdx.app.log("ObjTest", "obj bounds: " + mMesh.calculateBoundingBox());
-		
-		mTexture = mAssetManager.get("data/camo.jpg", Texture.class);
-		mTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
-		
-		return this;
-		
-	}
-	void Create() {
-		mMesh = ObjLoader.loadObj(Gdx.files.internal("data/plane.obj")
-				.read());
-		Gdx.app.log("ObjTest", "obj bounds: " + mMesh.calculateBoundingBox());
-		mTexture = new Texture(Gdx.files.internal("data/camo.jpg"), true);
-		mTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 
 	void update(float deltaSec) {
@@ -112,17 +95,6 @@ public class Aircraft implements IWorldObject {
 		pitchMatrix.trn(mLocation);
 		m_combinedMatrix = pitchMatrix;
 
-	}
-
-	void Render() {
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glPushMatrix();
-
-		gl.glMultMatrixf(m_combinedMatrix.val, 0);
-
-		mTexture.bind();
-		mMesh.render(GL10.GL_TRIANGLES);
-		gl.glPopMatrix();
 	}
 
 
@@ -169,9 +141,8 @@ public class Aircraft implements IWorldObject {
 		return mDirection;
 	}
 
-	public GameObject getLocked() {
-		// TODO Auto-generated method stub
-		return null;
+	public Aircraft getLocked() {
+		return mLocked;
 	}
 
 	public Matrix4 getCombinedMatrix() {
@@ -180,5 +151,9 @@ public class Aircraft implements IWorldObject {
 
 	public void setCombinedMatrix(Matrix4 m_combinedMatrix) {
 		this.m_combinedMatrix = m_combinedMatrix;
+	}
+
+	public void setLocked(Aircraft locked) {
+		mLocked = locked;
 	}
 }

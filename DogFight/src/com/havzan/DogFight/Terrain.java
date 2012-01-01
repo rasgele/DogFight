@@ -7,7 +7,7 @@ public class Terrain {
 		
 	}
 	
-	public void create(AssetManager assetManager){
+	public void create(){
 		
 	}
 }
