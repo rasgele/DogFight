@@ -11,7 +11,7 @@ public class CameraMan {
 
 	public float trackOffsetDist = 10;
 	public float trackOffsetLeft = -30;
-	public float trackOffsetHeight = 10;
+	public float trackOffsetHeight = 2;
 
 	public float mDistanceToTrack = 20;
 	private float mFoV = 45;

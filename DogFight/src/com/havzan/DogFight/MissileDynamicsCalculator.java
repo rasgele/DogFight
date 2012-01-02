@@ -7,32 +7,43 @@ import com.badlogic.gdx.math.Vector3;
 public class MissileDynamicsCalculator {
 	private static final float Range = 2000;
 	private static final float MaxTrackingAngle = (float) (Math.PI / 4);
-	private static final float MaxRotationPerSecond = 0;
+	private static final float MaxRotationPerSecond = 90;
 	private static final String TAG = "MISSILE DYN";
-	private static final float MaxSpeedPerSecond = 0;
+	private static final float MaxSpeedPerSecond = 900;
 
-	void updateMissile(Missile missile, float delta){
+	public static interface IMissileDynamicsListener {
+		void onMissileHit(Missile m);
+
+		void onMissileMissed(Missile m);
+	}
+
+	private IMissileDynamicsListener mListener = null;
+
+	public void setListener(IMissileDynamicsListener listener) {
+		mListener = listener;
+	}
+
+	void updateMissile(Missile missile, float delta) {
 		if (!missile.mIsTracking)
 			return;
 
 		missile.mFlightTime += delta;
-
 		missile.mLastUpdate += delta;
 
 		Vector3 targetLoc = missile.mTarget.getLocation().cpy();
-		Vector3 toTarget = targetLoc.sub(missile.mLocation);
+		Vector3 toTarget = targetLoc.sub(missile.getLocation());
 		Vector3 toTargetDir = toTarget.cpy().nor();
 		float distanceToTarget = toTarget.len();
 
-		if (missile.mLastUpdate > missile.mUpdateInterval) {
+		if (missile.mLastUpdate > Missile.mUpdateInterval) {
 			double angleChanged = 0.0f;
 
 			if (distanceToTarget > Range) {
 				missile.mIsTracking = false;
 			}
 
-			float angleToTarget = (float) MathUtil.getAngleBetween(missile.mDirection,
-					toTargetDir);
+			float angleToTarget = (float) MathUtil.getAngleBetween(
+					missile.mDirection, toTargetDir);
 
 			float angleToTargetAbs = Math.abs(angleToTarget);
 			float angleToTargetSign = Math.signum(angleToTarget);
@@ -73,7 +84,8 @@ public class MissileDynamicsCalculator {
 				direction.mul(rotationMtx);
 				direction.nor();
 
-				angleChanged = (float) MathUtil.getAngleBetween(missile.mDirection, direction);
+				angleChanged = (float) MathUtil.getAngleBetween(
+						missile.mDirection, direction);
 				angleChanged = (float) (angleChanged * 180 / Math.PI);
 
 				double newAngleToTarget = MathUtil.getAngleBetween(direction,
@@ -83,7 +95,8 @@ public class MissileDynamicsCalculator {
 
 				Gdx.app.log(TAG, "Old: " + angleToTarget + " New: "
 						+ newAngleToTarget + " Changed : " + angleChanged
-						+ " RoC : " + rateOfChange + "Distance :" + distanceToTarget);
+						+ " RoC : " + rateOfChange + "Distance :"
+						+ distanceToTarget);
 
 				missile.mDirection.set(direction);
 
@@ -96,10 +109,12 @@ public class MissileDynamicsCalculator {
 		if (missile.mFlightTime > 3.0)
 			missile.m_speedPerSec = MaxSpeedPerSecond;
 		else {
-			missile.m_speedPerSec = MaxSpeedPerSecond / (4.0f - missile.mFlightTime);
+			missile.m_speedPerSec = MaxSpeedPerSecond
+					/ (4.0f - missile.mFlightTime);
 		}
 		if (missile.mIsTracking) {
-			Vector3 deltaPos = missile.mDirection.tmp().mul(missile.m_speedPerSec * delta);
+			Vector3 deltaPos = missile.mDirection.tmp().mul(
+					missile.m_speedPerSec * delta);
 
 			missile.mLocation.add(deltaPos);
 			missile.mCombinedMatrix.trn(missile.mLocation);
@@ -107,7 +122,14 @@ public class MissileDynamicsCalculator {
 		if (missile.mIsTracking && distanceToTarget < 10) {
 			Gdx.app.log(TAG, "HIT!!!!!!!!!!!!!");
 			missile.mIsTracking = false;
-		} else if (!missile.mIsTracking)
+			if (mListener != null) {
+				mListener.onMissileHit(missile);
+			}
+		} else if (!missile.mIsTracking) {
 			Gdx.app.log(TAG, "Missed");
+			if (mListener != null) {
+				mListener.onMissileMissed(missile);
+			}
+		}
 	}
 }

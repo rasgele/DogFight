@@ -1,1 +1,6 @@
-test
+0. Fix orientation bug
+1. Fix locking interface
+2. Add locking counter
+3. Add Terrain collision
+4. Add sound
+5. Add particles.

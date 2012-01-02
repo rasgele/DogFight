@@ -1,6 +1,8 @@
 package com.havzan.DogFight;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -8,17 +10,17 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.havzan.DogFight.HUD.TrackData;
 import com.havzan.DogFight.World.IWorldEventListener;
 
 public class WorldRenderer {
@@ -249,9 +251,13 @@ public class WorldRenderer {
 
 	private void renderHUD() {
 		// TODO Auto-generated method stub
+		prepareHUDTrackingData();
+	}
+
+	private void prepareHUDTrackingData() {
 		Aircraft player = mWorld.getPlayer();
 
-		Collection<Aircraft> trackables = mWorld.getAircrafts();
+		Collection<Aircraft> trackables = mWorld.getTrackables(player);
 		BoundingBox box = new BoundingBox();
 		Assets.getAircraftModel().calculateBoundingBox(box);
 
@@ -261,24 +267,29 @@ public class WorldRenderer {
 
 		mHUD.mPosition.clear();
 
+		Vector3 playerLoc = player.getLocation();
+
 		for (Aircraft trackable : trackables) {
 			Vector3 proj = trackable.getLocation().cpy();
 			cam.project(proj);
 
-			//Gdx.app.log(TAG, "Window " + proj);
 			if (proj.z < 1.0f) {
 				HUD.TrackData data = new HUD.TrackData();
 				data.mPosition.set(proj.x, proj.y);
 				data.mIsLocked = (trackable == locked);
+				data.mDistance2 = trackable.getLocation().tmp2().sub(playerLoc)
+						.len2();
+				data.mAirCraft = trackable;
 				mHUD.mPosition.add(data);
 			}
-
-			// box.mul(trackable.getCombinedMatrix());
-			// if (Intersector.intersectRayBoundsFast(ray, box)){
-			// Gdx.app.log(TAG, "Hit test BB!");
-			// mWorld.setLocked(player, trackable);
-			// }
 		}
+
+		Collections.sort(mHUD.mPosition, new Comparator<HUD.TrackData>() {
+			@Override
+			public int compare(TrackData arg0, TrackData arg1) {
+				return arg0.compareTo(arg1);
+			}
+		});
 	}
 
 	private void renderMissiles(GL10 gl) {
@@ -354,25 +365,42 @@ public class WorldRenderer {
 
 		player.setThrust(mSlider.getPosition());
 
+		prepareHUDTrackingData();
+
 		if (Gdx.input.justTouched()) {
-			mCamMan.getCamera().unproject(
-					mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-			Ray ray = mCamMan.getCamera().getPickRay(Gdx.input.getX(),
-					Gdx.input.getY());
+			final float hitThreshold2 = 10f * 10f;
+			final Vector2 touch = new Vector2(Gdx.input.getX(),
+					Gdx.graphics.getHeight() - Gdx.input.getY());
 
-			Collection<Aircraft> trackables = mWorld.getTrackables(player);
-			BoundingBox box = new BoundingBox();
-			Assets.getAircraftModel().calculateBoundingBox(box);
-
-			for (Aircraft trackable : trackables) {
-				box.mul(trackable.getCombinedMatrix());
-				if (Intersector.intersectRayBoundsFast(ray, box)) {
-					Gdx.app.log(TAG, "Hit test BB!");
-					mWorld.setLocked(player, trackable);
+			for (HUD.TrackData trackData : mHUD.mPosition) {
+				Gdx.app.log(TAG, "Touch : " + touch + "\tPos : "
+						+ trackData.mPosition);
+				if (hitThreshold2 > trackData.mPosition.dst2(touch)) {
+					trackData.mIsLocked = true;
+					mWorld.setLocked(player, trackData.mAirCraft);
+					break;
 				}
 			}
 		}
-
+		// if (Gdx.input.justTouched()) {
+		//
+		// mCamMan.getCamera().unproject(
+		// mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+		// Ray ray = mCamMan.getCamera().getPickRay(Gdx.input.getX(),
+		// Gdx.input.getY());
+		//
+		// Collection<Aircraft> trackables = mWorld.getTrackables(player);
+		// BoundingBox box = new BoundingBox();
+		// Assets.getAircraftModel().calculateBoundingBox(box);
+		//
+		// for (Aircraft trackable : trackables) {
+		// box.mul(trackable.getCombinedMatrix());
+		// if (Intersector.intersectRayBoundsFast(ray, box)) {
+		// Gdx.app.log(TAG, "Hit test BB!");
+		// mWorld.setLocked(player, trackable);
+		// }
+		// }
+		// }
 	}
 
 	private void resetInitialOrientation() {

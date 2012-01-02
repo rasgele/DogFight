@@ -27,8 +27,9 @@ public class World {
 	private boolean mMarkersEnabled = false;
 	private Set<IWorldEventListener> mWorldEventListeners = new HashSet<World.IWorldEventListener>();
 	HashMap<Aircraft, HashSet<Aircraft>> mTrackingList = new HashMap<Aircraft, HashSet<Aircraft>>();
-	
+
 	AircraftDynamicsCalculator mAircraftCalc = new AircraftDynamicsCalculator();
+	MissileDynamicsCalculator mMissileCalc = new MissileDynamicsCalculator();
 
 	public void create() {
 		initializeWorld();
@@ -69,10 +70,10 @@ public class World {
 		mTerrain.create();
 
 		mPlayerAircraft = new Aircraft();
-		mPlayerAircraft.getLocation().set(0,0,2000);
+		mPlayerAircraft.getLocation().set(0, 0, 2000);
 
 		Aircraft drone = new Aircraft();
-		drone.getLocation().set(0,0,2000);
+		drone.getLocation().set(0, 0, 2000);
 		addAircraft(drone);
 	}
 
@@ -80,15 +81,10 @@ public class World {
 		mPlayerAircraft.update(delta);
 
 		for (Aircraft a : mAircrafts)
-			mAircraftCalc.updateAircraft(a, delta);//a.update(delta);
+			mAircraftCalc.updateAircraft(a, delta);
 
 		for (Missile m : mMissiles)
-			m.update(delta);
-
-//		Collection<Aircraft> trackables = getTrackables(mPlayerAircraft);
-//		HashSet<Aircraft> currentTrackables = mTrackingList.get(mPlayerAircraft);
-//		for (Aircraft a : trackables)
-//			currentTrackables.add(a);
+			mMissileCalc.updateMissile(m, delta);
 	}
 
 	public Collection<Aircraft> getTrackables(Aircraft tracker) {
