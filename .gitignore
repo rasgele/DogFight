@@ -1,4 +1,5 @@
 *.class
+DogFight-Desktop/bin/*
 # Compiled source #
 ###################
 *.com
