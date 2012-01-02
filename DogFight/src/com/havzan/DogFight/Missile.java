@@ -12,25 +12,25 @@ import com.badlogic.gdx.math.Vector3;
 public class Missile implements IWorldObject {
 	private static final String TAG = "Aircraft";
 	private static final float MaxSpeedPerSecond = 900;
-	private float mFlightTime;
+	float mFlightTime;
 	Mesh m_mesh;
 	Texture m_texture;
 
 	Vector3 mLocation;
-	private Vector3 mDirection;
+	Vector3 mDirection;
 
-	private float m_speedPerSec = 0;
+	float m_speedPerSec = 0;
 	private static float MaxRotationPerSecond = 90;
 	private final double MaxTrackingAngle = Math.PI / 6;
-	private Matrix4 mCombinedMatrix;
+	Matrix4 mCombinedMatrix;
 
-	private IWorldObject m_target = null;
-	private boolean m_tracking = false;
+	IWorldObject mTarget = null;
+	boolean mIsTracking = false;
 
 	public static float Range = 5000f;
 
-	private float mLastUpdate = 0.0f;
-	private static float mUpdateInterval = 0.00000f;
+	float mLastUpdate = 0.0f;
+	static float mUpdateInterval = 0.00000f;
 
 	public Missile(Matrix4 initPosition) {
 		mCombinedMatrix = new Matrix4(initPosition);
@@ -53,19 +53,19 @@ public class Missile implements IWorldObject {
 	}
 
 	void SetTarget(Aircraft aircraft) {
-		m_target = aircraft;
-		m_tracking = true;
+		mTarget = aircraft;
+		mIsTracking = true;
 	}
 
 	void update(float deltaSec) {
-		if (!m_tracking)
+		if (!mIsTracking)
 			return;
 
 		mFlightTime += deltaSec;
 
 		mLastUpdate += deltaSec;
 
-		Vector3 targetLoc = m_target.getLocation().cpy();
+		Vector3 targetLoc = mTarget.getLocation().cpy();
 		Vector3 toTarget = targetLoc.sub(mLocation);
 		Vector3 toTargetDir = toTarget.cpy().nor();
 		float distanceToTarget = toTarget.len();
@@ -74,7 +74,7 @@ public class Missile implements IWorldObject {
 			double angleChanged = 0.0f;
 
 			if (distanceToTarget > Range) {
-				m_tracking = false;
+				mIsTracking = false;
 			}
 
 			float angleToTarget = (float) getAngleBetween(mDirection,
@@ -84,12 +84,12 @@ public class Missile implements IWorldObject {
 			float angleToTargetSign = Math.signum(angleToTarget);
 
 			if (angleToTargetAbs > MaxTrackingAngle) {
-				m_tracking = false;
+				mIsTracking = false;
 			}
 			angleToTargetAbs = (float) (angleToTargetAbs * 180 / Math.PI);
 			angleToTarget = (float) (angleToTarget * 180 / Math.PI);
 
-			if (angleToTarget != 0 && m_tracking) {
+			if (angleToTarget != 0 && mIsTracking) {
 				Vector3 rotationAxis = mDirection.cpy();
 				rotationAxis.crs(toTargetDir);
 				rotationAxis.nor();
@@ -144,16 +144,16 @@ public class Missile implements IWorldObject {
 		else {
 			m_speedPerSec = MaxSpeedPerSecond / (4.0f - mFlightTime);
 		}
-		if (m_tracking) {
+		if (mIsTracking) {
 			Vector3 deltaPos = mDirection.cpy().mul(m_speedPerSec * deltaSec);
 
 			mLocation.add(deltaPos);
 			mCombinedMatrix.trn(mLocation);
 		}
-		if (m_tracking && distanceToTarget < 10) {
+		if (mIsTracking && distanceToTarget < 10) {
 			Gdx.app.log(TAG, "HIT!!!!!!!!!!!!!");
-			m_tracking = false;
-		} else if (!m_tracking)
+			mIsTracking = false;
+		} else if (!mIsTracking)
 			Gdx.app.log(TAG, "Missed");
 
 	}

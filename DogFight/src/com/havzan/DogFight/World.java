@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.Matrix4;
-import com.havzan.DogFight.World.IWorldEventListener;
 
 public class World {
 
@@ -30,6 +27,8 @@ public class World {
 	private boolean mMarkersEnabled = false;
 	private Set<IWorldEventListener> mWorldEventListeners = new HashSet<World.IWorldEventListener>();
 	HashMap<Aircraft, HashSet<Aircraft>> mTrackingList = new HashMap<Aircraft, HashSet<Aircraft>>();
+	
+	AircraftDynamicsCalculator mAircraftCalc = new AircraftDynamicsCalculator();
 
 	public void create() {
 		initializeWorld();
@@ -81,7 +80,7 @@ public class World {
 		mPlayerAircraft.update(delta);
 
 		for (Aircraft a : mAircrafts)
-			a.update(delta);
+			mAircraftCalc.updateAircraft(a, delta);//a.update(delta);
 
 		for (Missile m : mMissiles)
 			m.update(delta);
@@ -109,7 +108,7 @@ public class World {
 			Missile m = new Missile(misMtx).create();
 			m.SetTarget(lockedObj);
 
-			mMissiles.add(m);
+			addMissile(m);
 
 			return true;
 		} else

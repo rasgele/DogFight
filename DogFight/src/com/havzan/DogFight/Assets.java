@@ -53,6 +53,7 @@ public class Assets {
 	
 	private static AssetManager mAssetManager;
 
+	private final static String AircraftModelPath = "data/f22.obj";
 	public static void load() {
 		mAssetManager = new AssetManager();
 
@@ -103,7 +104,7 @@ public class Assets {
 		mAssetManager.load("data/grid.obj", Mesh.class);
 		mAssetManager.load("data/gridHills.obj", Mesh.class);
 		mAssetManager.load("data/marker.obj", Mesh.class);
-		mAssetManager.load("data/f15.obj", Mesh.class);
+		mAssetManager.load(AircraftModelPath, Mesh.class);
 		mAssetManager.load("data/sky.obj", Mesh.class);
 		mAssetManager.load("data/sphere.obj", Mesh.class);
 		mAssetManager.load("data/xyzplaneZ.obj", Mesh.class);		
@@ -118,7 +119,7 @@ public class Assets {
 	}
 	
 	public static Mesh getAircraftModel(){
-		return mAssetManager.get("data/f15.obj", Mesh.class);
+		return mAssetManager.get(AircraftModelPath, Mesh.class);
 	}
 	public static Texture getAircraftTexture(){
 		return mAssetManager.get("data/camo.jpg", Texture.class);

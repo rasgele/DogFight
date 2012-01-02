@@ -333,10 +333,10 @@ public class WorldRenderer {
 		float roll = Gdx.input.getRoll();
 
 		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
-			pitch = -90 + mInitialRoll;
+			pitch = 90 + mInitialRoll;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
-			pitch = 90 + mInitialRoll;
+			pitch = -90 + mInitialRoll;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
 			roll = 90 + mInitialPitch;
@@ -349,7 +349,7 @@ public class WorldRenderer {
 		}
 
 		Aircraft player = mWorld.getPlayer();
-		player.SetLean((pitch - mInitialRoll) / 45);
+		player.SetLean((pitch - mInitialRoll) / -45);
 		player.SetPull((roll - mInitialPitch) / 30);
 
 		player.setThrust(mSlider.getPosition());

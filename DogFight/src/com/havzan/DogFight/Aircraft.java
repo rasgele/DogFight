@@ -17,16 +17,16 @@ public class Aircraft implements IWorldObject {
 	Vector3 mLocation = new Vector3();
 	private Vector3 mDirection = new Vector3(0, 0, -1);
 
-	private float m_lean = 0;
-	private float m_pull = 0;
-	private float m_speedPerSec = 0;
-	private float m_maxLeanPerSec = 80;
+	float mLean = 0;
+	float mPull = 0;
+	float mSpeedPerSec = 0;
+	private float m_maxLeanPerSec = 180;
 	private float m_maxPullPerSec = 20;
 	private Matrix4 m_combinedMatrix = new Matrix4();
-	private float mThrust = 0;
-	private float mAcceleration = 0;
+	float mThrust = 0;
+	float mAcceleration = 0;
 
-	private static float MaxSpeedPerSec = 400;
+	private static float MaxSpeedPerSec = 600;
 	private static float MinSpeedPerSec = 0;
 	
 	private Aircraft mLocked = null;
@@ -55,8 +55,8 @@ public class Aircraft implements IWorldObject {
 	}
 
 	void update(float deltaSec) {
-		float stepLean = m_lean * m_maxLeanPerSec * deltaSec;
-		float stepPull = m_pull * m_maxPullPerSec * deltaSec;
+		float stepLean = mLean * m_maxLeanPerSec * deltaSec;
+		float stepPull = mPull * m_maxPullPerSec * deltaSec;
 
 		Matrix4 combinedRotation = new Matrix4(m_combinedMatrix);
 		combinedRotation.trn(-m_combinedMatrix.val[Matrix4.M03],
@@ -84,13 +84,13 @@ public class Aircraft implements IWorldObject {
 		// Gdx.app.log(TAG, "deltaSec = " + deltaSec + ", m_speedPerSec = " +
 		// m_speedPerSec + "   accele :" + mAcceleration);
 
-		m_speedPerSec += mAcceleration * deltaSec;
-		m_speedPerSec = Math.max(MinSpeedPerSec,
-				Math.min(MaxSpeedPerSec, m_speedPerSec));
+		mSpeedPerSec += mAcceleration * deltaSec;
+		mSpeedPerSec = Math.max(MinSpeedPerSec,
+				Math.min(MaxSpeedPerSec, mSpeedPerSec));
 		
-		m_speedPerSec = mThrust * MaxSpeedPerSec;
+		mSpeedPerSec = mThrust * MaxSpeedPerSec;
 		
-		mLocation.add(direction.mul(m_speedPerSec * deltaSec));
+		mLocation.add(direction.mul(mSpeedPerSec * deltaSec));
 
 		pitchMatrix.trn(mLocation);
 		m_combinedMatrix = pitchMatrix;
@@ -101,18 +101,18 @@ public class Aircraft implements IWorldObject {
 	public void SetPull(float pull) {
 		pull = pull < 1 ? pull : 1;
 		pull = pull > -1 ? pull : -1;
-		m_pull = pull;
+		mPull = pull;
 	}
 
 	public void SetLean(float lean) {
 		lean = lean < 1 ? lean : 1;
 		lean = lean > -1 ? lean : -1;
-		m_lean = lean;
+		mLean = lean;
 	}
 
 	public void setThrust(float thrust) {
 		this.mThrust = thrust;
-		float speedRatio = m_speedPerSec / MaxSpeedPerSec;
+		float speedRatio = mSpeedPerSec / MaxSpeedPerSec;
 		mAcceleration = (thrust - (speedRatio))
 				* (1 + Math.abs(speedRatio - 0.5f)) * 10;
 	}
