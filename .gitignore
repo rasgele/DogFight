@@ -1,5 +1,6 @@
 *.class
 DogFight-Desktop/bin/*
+DogFight-android/bin/*
 # Compiled source #
 ###################
 *.com
