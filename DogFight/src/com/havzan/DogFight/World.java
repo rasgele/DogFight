@@ -70,11 +70,11 @@ public class World {
 		mTerrain.create();
 
 		mPlayerAircraft = new Aircraft();
-		mPlayerAircraft.getLocation().set(0, 0, 2000);
+		mPlayerAircraft.getLocation().set(-20, 0, 2000);
 
-		Aircraft drone = new Aircraft();
-		drone.getLocation().set(0, 0, 2000);
-		addAircraft(drone);
+//		Aircraft drone = new Aircraft();
+//		drone.getLocation().set(0, 0, 2000);
+//		addAircraft(drone);
 	}
 
 	public void update(float delta) {

@@ -46,6 +46,7 @@ public class WorldRenderer {
 	private Vector3 mTouchPoint = new Vector3();
 
 	private HUD mHUD;
+	private SkyBox mSkybox;
 
 	interface IWorldPresenter {
 		void onMissileFire();
@@ -92,6 +93,10 @@ public class WorldRenderer {
 		mCamMan.trackMode(mWorld.getPlayer());
 		createUI();
 		Gdx.input.setInputProcessor(mUI);
+		
+		mSkybox = new SkyBox();
+		mSkybox.setCameraDirection(mCamMan.getCamera().direction.cpy());
+		mSkybox.create();
 
 		for (Aircraft a : mWorld.getAircrafts()) {
 			mRadar.addObjectToTrack(a);
@@ -223,8 +228,11 @@ public class WorldRenderer {
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
+		
+		
 
 		setupCamera(deltaTime, gl);
+		mSkybox.render(mCamMan.getCamera());
 		renderTerrain(gl);
 		renderAircrafts(gl);
 		renderMissiles(gl);

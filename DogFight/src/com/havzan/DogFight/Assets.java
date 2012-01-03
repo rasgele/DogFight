@@ -107,7 +107,10 @@ public class Assets {
 		mAssetManager.load(AircraftModelPath, Mesh.class);
 		mAssetManager.load("data/sky.obj", Mesh.class);
 		mAssetManager.load("data/sphere.obj", Mesh.class);
-		mAssetManager.load("data/xyzplaneZ.obj", Mesh.class);		
+		mAssetManager.load("data/xyzplaneZ.obj", Mesh.class);	
+		
+		mAssetManager.load("data/sky2.obj", Mesh.class);	
+		mAssetManager.load("data/sky2.png", Texture.class);
 
 		mAssetManager.finishLoading();
 
