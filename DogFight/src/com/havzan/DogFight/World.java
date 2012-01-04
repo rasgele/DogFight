@@ -66,11 +66,11 @@ public class World {
 	}
 
 	private void initializeWorld() {
-		mTerrain = new Terrain(2, 2, 1);
+		mTerrain = new Terrain(256, 256, 1000,1000,100);
 		mTerrain.create();
 
 		mPlayerAircraft = new Aircraft();
-		mPlayerAircraft.getLocation().set(-20, 0, 2000);
+		mPlayerAircraft.getLocation().set(-200, 0, 10);
 
 		// Aircraft drone = new Aircraft();
 		// drone.getLocation().set(0, 0, 2000);

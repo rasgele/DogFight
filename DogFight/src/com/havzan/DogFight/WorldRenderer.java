@@ -230,9 +230,9 @@ public class WorldRenderer {
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
 
 		setupCamera(deltaTime, gl);
-		// mSkybox.render(mCamMan.getCamera());
-		renderTerrain(gl);
+		mSkybox.render(mCamMan.getCamera());
 		renderAircrafts(gl);
+		renderTerrain(gl);
 		renderMissiles(gl);
 		renderHUD();
 		renderUI(deltaTime);
@@ -240,15 +240,19 @@ public class WorldRenderer {
 
 	private void renderTerrain(GL10 gl) {
 		gl.glPushMatrix();
-		gl.glScalef(10000, 10000, 10000);
+		//gl.glScalef(1000, 1000, 100);
 		// gl.glDisable(GL10.GL_LIGHTING);
 		// gl.glDisable(GL10.GL_TEXTURE);
 
+		// gl.glEnable(GL10.GL_COLOR_MATERIAL);
 		Assets.getTerrainTexture().bind();
 
 		// Assets.getTerrainModel().render(GL10.GL_TRIANGLES);
 
 		mWorld.mTerrain.mesh.render(GL10.GL_TRIANGLES);
+		
+		 //gl.glEnable(GL10.GL_LIGHTING);
+		// gl.glEnable(GL10.GL_TEXTURE);
 
 		gl.glPopMatrix();
 
