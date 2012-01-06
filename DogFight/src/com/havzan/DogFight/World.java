@@ -66,7 +66,7 @@ public class World {
 	}
 
 	private void initializeWorld() {
-		mTerrain = new Terrain(256, 256, 1000,1000,100);
+		mTerrain = new Terrain(128, 128, 10, 10, 100);
 		mTerrain.create();
 
 		mPlayerAircraft = new Aircraft();

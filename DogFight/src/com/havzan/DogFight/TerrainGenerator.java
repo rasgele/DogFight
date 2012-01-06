@@ -5,12 +5,12 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 
-public class Terrain {
-	Mesh mesh;
+public class TerrainGenerator {
 	final int mWidth;
 	final int mHeight;
 	final int mNumVertX;
@@ -23,75 +23,135 @@ public class Terrain {
 	final float mScaleY;
 	final float mScaleZ;
 
-	float[] mVertices;
+	final int mTriangleCount;
+	final int mVertexCount;
+	final int mIndiceCount;
+
 	short[] mIndices;
-	private int mVertexSize;
+	private final int mVertexSize;
+	private Vector3[] mVertexPositions;
+	Plane[] mTriangles;
+	ArrayList<ArrayList<Plane>> vertexToFace = new ArrayList<ArrayList<Plane>>();
 
-	ImmediateModeRenderer10 renderer = new ImmediateModeRenderer10();
-	ArrayList<Vector3> mVertexNormals = new ArrayList<Vector3>();
+	private boolean mIsGeoCreated = false;
+	private boolean mIsCollisionDataCreated = false;
+	private final VertexAttributes vertexAttributes;
 
-	Vector3 getVertex(int index) {
-		return new Vector3(mVertices[index * mVertexSize], mVertices[index
-				* mVertexSize + 1], mVertices[index * mVertexSize + 2]);
-	}
-
-	public Terrain(int width, int height, float scaleX, float scaleY,
-			float scaleZ) {
-		mWidth = width;
-		mHeight = height;
-		mNumVertX = width + 1;
-		mNumVertY = width + 1;
+	public TerrainGenerator(float terrainSize, int gridWidth) {
+		mWidth = gridWidth;
+		mHeight = gridWidth;
+		mNumVertX = mWidth + 1;
+		mNumVertY = mWidth + 1;
 		mHeightMap = new float[mNumVertX][mNumVertY];
-		mScaleX = scaleX;
-		mScaleY = scaleY;
-		mScaleZ = scaleZ;
-		mStartX = -width / 2;
-		mStartY = -height / 2;
+		mScaleX = terrainSize / gridWidth;
+		mScaleY = mScaleX;
+		mScaleZ = mScaleX;
+		mStartX = -mWidth / 2;
+		mStartY = -mWidth / 2;
+		mVertexCount = mNumVertX * mNumVertY;
+		mTriangleCount = mWidth * mHeight * 2;
+		mIndiceCount = mTriangleCount * 3;
+
+		vertexAttributes = new VertexAttributes(new VertexAttribute(
+				Usage.Position, 3, "a_pos"), new VertexAttribute(
+				Usage.TextureCoordinates, 2, "a_tex"), new VertexAttribute(
+				Usage.Normal, 3, "a_nor"));
+		// devide by float size(?)
+		mVertexSize = vertexAttributes.vertexSize / 4;
 	}
 
-	public void create() {
-		mesh = new Mesh(false, mNumVertX * mNumVertY, mWidth * mHeight * 2 * 3,
-				new VertexAttribute(Usage.Position, 3, "a_pos")
-				/* , new VertexAttribute(Usage.ColorPacked, 4, "a_col") */
-				, new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex"),
-				new VertexAttribute(Usage.Normal, 3, "a_nor"));
+	public void createGeometry() {
+		createGridData();
+		createIndices();
 
-		mVertexSize = mesh.getVertexSize() / 4;
+		mIsGeoCreated = true;
+	}
 
-		mVertices = new float[mNumVertX * mNumVertY * mVertexSize];
-		mIndices = new short[mWidth * mHeight * 2 * 3];
+	public void createCollisionData() {
+		if (!mIsGeoCreated)
+			createGeometry();
 
-		fillHeights(1.0, 1);
+		vertexToFace = new ArrayList<ArrayList<Plane>>(mVertexCount);
+		for (int i = 0; i < mVertexCount; i++) {
+			vertexToFace.add(new ArrayList<Plane>(6));
+		}
 
-		float step = 1f / mNumVertX;
+		for (int i = 0; i < mTriangleCount; i++) {
+			short v0 = mIndices[i * 3];
+			short v1 = mIndices[i * 3 + 1];
+			short v2 = mIndices[i * 3 + 2];
 
-		ArrayList<ArrayList<Vector3>> vertexToFaceNorm = new ArrayList<ArrayList<Vector3>>();
+			Plane p = new Plane(mVertexPositions[v0], mVertexPositions[v1],
+					mVertexPositions[v2]);
 
-		int bufferIndex = 0;
-		for (int i = 0; i < mNumVertY; i++) {
-			for (int j = 0; j < mNumVertX; j++) {
+			mTriangles[i] = p;
 
-				mVertices[bufferIndex] = mScaleX * (mStartX + j); // set x
-				mVertices[bufferIndex + 1] = mScaleY * (mStartY + i); // set x
-				mVertices[bufferIndex + 2] = mScaleZ * (mHeightMap[i][j]); // set
-																			// z
+			vertexToFace.get(v0).add(p);
+			vertexToFace.get(v1).add(p);
+			vertexToFace.get(v2).add(p);
+		}
+	}
 
-				mVertices[bufferIndex + 3] = j * step; // u
-				mVertices[bufferIndex + 4] = i * step;// v
-				// mVertices[vertexNumber + 3] =
-				// Color.toFloatBits(r.nextFloat(), r.nextFloat(),
-				// r.nextFloat(), 1f);
-				vertexToFaceNorm.add(new ArrayList<Vector3>());
-				bufferIndex += mVertexSize;
+	private void createIndices() {
+		mIndices = new short[mIndiceCount];
+
+		int triangleIndex = 0;
+		for (short i = 0; i < mHeight; i++) {
+			for (short j = 0; j < mWidth; j++) {
+				// j.th col
+				// |
+				// V
+				// v2---v3
+				// | / |
+				// v0---v1 <- i.th row
+				short v0 = (short) (j + (i * mNumVertX));
+				short v1 = (short) (j + 1 + (i * mNumVertX));
+				short v2 = (short) (j + ((i + 1) * mNumVertX));
+				short v3 = (short) (j + 1 + ((i + 1) * mNumVertX));
+
+				mIndices[triangleIndex * 3] = v0; // set v0
+				mIndices[triangleIndex * 3 + 1] = v1; // set v2
+				mIndices[triangleIndex * 3 + 2] = v3; // set v3
+
+				triangleIndex++;
+
+				mIndices[triangleIndex * 3] = v0; // set v0
+				mIndices[triangleIndex * 3 + 1] = v3; // set v3
+				mIndices[triangleIndex * 3 + 2] = v2; // set v1
+
+				triangleIndex++;
 			}
 		}
+	}
+
+	private void createGridData() {
+		fillHeights(1.0f, 1.0f);
+
+		mVertexPositions = new Vector3[mNumVertX * mNumVertY];
+
+		int vertexCount = 0;
+		for (int i = 0; i < mNumVertY; i++) {
+			for (int j = 0; j < mNumVertX; j++) {
+				mVertexPositions[vertexCount++] = new Vector3(mScaleX
+						* (mStartX + j), mScaleY * (mStartY + i), mScaleZ
+						* (mHeightMap[i][j]));
+			}
+		}
+	}
+
+	private void createTriangleIndiceBuffer() {
+		int numOfTrianles = mWidth * mHeight * 2;
+		mIndices = new short[numOfTrianles * 3];
 
 		int triangleCount = 0;
 		for (short i = 0; i < mHeight; i++) {
 			for (short j = 0; j < mWidth; j++) {
-				// v0---v1
-				// | \ |
+				// jth col
+				// |
+				// V
 				// v2---v3
+				// | / |
+				// v0---v1 <- i.th row
 				short v0 = (short) (j + (i * mNumVertX));
 				short v1 = (short) (j + 1 + (i * mNumVertX));
 				short v2 = (short) (j + ((i + 1) * mNumVertX));
@@ -101,13 +161,13 @@ public class Terrain {
 				mIndices[triangleCount * 3 + 1] = v1; // set v2
 				mIndices[triangleCount * 3 + 2] = v3; // set v3
 
-				Vector3 normal = calculateNormal(v0, v1, v3);
-				ArrayList<Vector3> vec = vertexToFaceNorm.get(v0);
-				vec.add(normal);
-				vec = vertexToFaceNorm.get(v1);
-				vec.add(normal);
-				vec = vertexToFaceNorm.get(v3);
-				vec.add(normal);
+				Plane p = new Plane(mVertexPositions[v0], mVertexPositions[v1],
+						mVertexPositions[v3]);
+
+				mTriangles[triangleCount] = p;
+				vertexToFace.get(v0).add(p);
+				vertexToFace.get(v1).add(p);
+				vertexToFace.get(v3).add(p);
 
 				triangleCount++;
 
@@ -115,60 +175,51 @@ public class Terrain {
 				mIndices[triangleCount * 3 + 1] = v3; // set v3
 				mIndices[triangleCount * 3 + 2] = v2; // set v1
 
-				normal = calculateNormal(v0, v3, v2);
+				p = new Plane(mVertexPositions[v0], mVertexPositions[v3],
+						mVertexPositions[v2]);
 
-				vertexToFaceNorm.get(v0).add(normal);
-				vertexToFaceNorm.get(v3).add(normal);
-				vertexToFaceNorm.get(v2).add(normal);
+				mTriangles[triangleCount] = p;
+				vertexToFace.get(v0).add(p);
+				vertexToFace.get(v3).add(p);
+				vertexToFace.get(v2).add(p);
 
 				triangleCount++;
 			}
 		}
-
-		for (int i = 0; i < vertexToFaceNorm.size(); i++) {
-
-			ArrayList<Vector3> faceNorms = vertexToFaceNorm.get(i);
-
-			Vector3 sum = new Vector3();
-			for (Vector3 norm : faceNorms) {
-				sum.add(norm);
-			}
-			sum.nor();
-
-			mVertexNormals.add(sum);
-
-			mVertices[i * mVertexSize + 5] = sum.x;
-			mVertices[i * mVertexSize + 6] = sum.y;
-			mVertices[i * mVertexSize + 7] = sum.z;
-		}
-
-		mesh.setVertices(mVertices);
-		mesh.setIndices(mIndices);
-
 	}
 
-	private Vector3 calculateNormal(short v0, short v1, short v2) {
-		Vector3 pnt0 = new Vector3();
-		Vector3 pnt1 = new Vector3();
-		Vector3 pnt2 = new Vector3();
-		pnt0.x = mVertices[v0 * mVertexSize];
-		pnt0.y = mVertices[v0 * mVertexSize + 1];
-		pnt0.z = mVertices[v0 * mVertexSize + 2];
+	public Mesh createMesh() {
+		Mesh mesh = new Mesh(false, mVertexCount, mIndiceCount,
+				vertexAttributes);
 
-		pnt1.x = mVertices[v1 * mVertexSize];
-		pnt1.y = mVertices[v1 * mVertexSize + 1];
-		pnt1.z = mVertices[v1 * mVertexSize + 2];
+		if (!mIsCollisionDataCreated)
+			createCollisionData();
 
-		pnt2.x = mVertices[v2 * mVertexSize];
-		pnt2.y = mVertices[v2 * mVertexSize + 1];
-		pnt2.z = mVertices[v2 * mVertexSize + 2];
+		float[] verticeBuffer = new float[mNumVertX * mNumVertY * mVertexSize];
 
-		Vector3 vec01 = pnt1.sub(pnt0).nor();
-		Vector3 vec02 = pnt2.sub(pnt0).nor();
+		float step = 1f / mNumVertX; // Map whole texture evenly.
 
-		vec01.crs(vec02);
+		for (int i = 0, vertexIndex = 0; i < mNumVertY; i++) {
+			for (int j = 0; j < mNumVertX; j++) {
+				int bufferIndex = vertexIndex * mVertexSize;
+				verticeBuffer[bufferIndex] = mVertexPositions[vertexIndex].x;
+				verticeBuffer[bufferIndex + 1] = mVertexPositions[vertexIndex].y;
+				verticeBuffer[bufferIndex + 2] = mVertexPositions[vertexIndex].z;
+				verticeBuffer[bufferIndex + 3] = j * step; // u
+				verticeBuffer[bufferIndex + 4] = i * step;// v
+				verticeBuffer[bufferIndex + 5] = mTriangles[vertexIndex].normal.x;
+				verticeBuffer[bufferIndex + 6] = mTriangles[vertexIndex].normal.y;
+				verticeBuffer[bufferIndex + 7] = mTriangles[vertexIndex].normal.z;
+				vertexIndex++;
+			}
+		}
 
-		return vec01;
+		createTriangleIndiceBuffer();
+
+		mesh.setVertices(verticeBuffer);
+		mesh.setIndices(mIndices);
+
+		return mesh;
 	}
 
 	void fillHeights(double seed, double h) {

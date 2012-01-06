@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -40,13 +42,13 @@ public class WorldRenderer {
 	private World mWorld;
 
 	float[] lightColor = { 1, 1, 1, 0 };
-	float[] lightPosition = { 2, 5, 10, 0 };
+	float[] lightPosition = { 2, 5, 700, 0 };
 	private float mInitialRoll;
 	private float mInitialPitch;
-	private Vector3 mTouchPoint = new Vector3();
-
 	private HUD mHUD;
 	private SkyBox mSkybox;
+	private BitmapFont font;
+	private SpriteBatch batch;
 
 	interface IWorldPresenter {
 		void onMissileFire();
@@ -110,6 +112,9 @@ public class WorldRenderer {
 
 	private void createUI() {
 		mUI = new Stage(mWidth, mHeight, true);
+
+		font = new BitmapFont();
+		batch = new SpriteBatch();
 
 		mSlider = new Slider("slider");
 
@@ -225,22 +230,24 @@ public class WorldRenderer {
 		gl.glEnable(GL10.GL_COLOR_MATERIAL);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
+		setupCamera(deltaTime, gl);
+
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
 
-		setupCamera(deltaTime, gl);
 		mSkybox.render(mCamMan.getCamera());
 		renderAircrafts(gl);
-		renderTerrain(gl);
 		renderMissiles(gl);
+		renderTerrain(gl);
+		gl.glDisable(GL10.GL_LIGHTING);
 		renderHUD();
 		renderUI(deltaTime);
 	}
 
 	private void renderTerrain(GL10 gl) {
 		gl.glPushMatrix();
-		//gl.glScalef(1000, 1000, 100);
+		// gl.glScalef(1000, 1000, 100);
 		// gl.glDisable(GL10.GL_LIGHTING);
 		// gl.glDisable(GL10.GL_TEXTURE);
 
@@ -248,17 +255,64 @@ public class WorldRenderer {
 		Assets.getTerrainTexture().bind();
 
 		// Assets.getTerrainModel().render(GL10.GL_TRIANGLES);
+		Mesh terrain = Assets.getTerrainModel();
 
-		mWorld.mTerrain.mesh.render(GL10.GL_TRIANGLES);
-		
-		 //gl.glEnable(GL10.GL_LIGHTING);
-		// gl.glEnable(GL10.GL_TEXTURE);
+		terrain.render(GL10.GL_TRIANGLES);
 
+		gl.glDisable(GL10.GL_TEXTURE);
+		gl.glDisable(GL10.GL_LIGHTING);
+
+		// int i = 0;
+		// while (i < mWorld.mTerrain.mVertexNormals.size()) {
+		// i = drawTerrainNormals(mWorld.mTerrain.renderer.getMaxVertices() /
+		// 2);
+		// }
+
+		gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_LINE);
+		gl.glLineWidth(3);
+		gl.glColor4f(0, 0, 1, 1);
+		terrain.render(GL10.GL_TRIANGLES);
+		gl.glLineWidth(1);
+
+		gl.glEnable(GL10.GL_LIGHTING);
+		gl.glEnable(GL10.GL_TEXTURE);
+
+		gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_FILL);
 		gl.glPopMatrix();
 
 	}
 
+	private int drawTerrainNormals(int batchSize) {
+		int i;
+		mWorld.mTerrain.renderer.begin(GL10.GL_LINES);
+
+		for (i = 0; i < mWorld.mTerrain.mVertexNormals.size() && i < batchSize; i++) {
+			Vector3 normal = mWorld.mTerrain.mVertexNormals.get(i).cpy();
+			Vector3 vertex = mWorld.mTerrain.getVertex(i);
+			mWorld.mTerrain.renderer.color(0, 1, 0, 1);
+			mWorld.mTerrain.renderer.vertex(vertex);
+			mWorld.mTerrain.renderer.color(0, 1, 0, 1);
+			normal.mul(100).add(vertex);
+			mWorld.mTerrain.renderer.vertex(normal);
+		}
+		mWorld.mTerrain.renderer.end();
+		return i;
+	}
+
 	private void renderUI(float deltaTime) {
+		Aircraft aircraft = mWorld.getPlayer();
+		batch.begin();
+		String text = /*
+					 * "A :" + azimuth + "\nP :" + pitch + "\nR :" + roll +
+					 * "\nDeltaTime: " + deltaTime + "\nLean : " + (pitch -
+					 * initialRoll) / 45 + "\nPull : " + (roll - initialPitch) /
+					 * 30 + "\n" +
+					 */
+		"Position :" + aircraft.getLocation() + "\n" + "Heading :"
+				+ aircraft.getDirection() + "\n" + "Direction :"
+				+ aircraft.getDirection();
+		font.drawMultiLine(batch, text, 20, Gdx.graphics.getHeight() - 5);
+		batch.end();
 		mUI.act(deltaTime);
 		mUI.draw();
 	}
