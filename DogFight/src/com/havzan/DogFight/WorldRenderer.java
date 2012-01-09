@@ -231,6 +231,18 @@ public class WorldRenderer {
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
 		setupCamera(deltaTime, gl);
+		
+		   gl.glEnable(GL10.GL_FOG);
+		   {
+		      float[] fogColor = {0.5f, 0.5f, 0.5f, 1.0f};
+
+		      gl.glFogf (GL10.GL_FOG_MODE, GL10.GL_LINEAR);
+		      gl.glFogfv(GL10.GL_FOG_COLOR, fogColor, 0);
+		      gl.glFogf (GL10.GL_FOG_DENSITY, 0.8f);
+		      gl.glHint (GL10.GL_FOG_HINT, GL10.GL_DONT_CARE);
+		      gl.glFogf (GL10.GL_FOG_START, 1000);
+		      gl.glFogf (GL10.GL_FOG_END, 4000);
+		   }
 
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
@@ -259,25 +271,33 @@ public class WorldRenderer {
 
 		terrain.render(GL10.GL_TRIANGLES);
 
-		gl.glDisable(GL10.GL_TEXTURE);
-		gl.glDisable(GL10.GL_LIGHTING);
-
 		// int i = 0;
 		// while (i < mWorld.mTerrain.mVertexNormals.size()) {
 		// i = drawTerrainNormals(mWorld.mTerrain.renderer.getMaxVertices() /
 		// 2);
 		// }
+		
+		boolean drawTriangles = false;
+		if (drawTriangles) {
+			gl.glDisable(GL10.GL_TEXTURE);
+			gl.glDisable(GL10.GL_LIGHTING);
 
-		gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_LINE);
-		gl.glLineWidth(3);
-		gl.glColor4f(0, 0, 1, 1);
-		terrain.render(GL10.GL_TRIANGLES);
-		gl.glLineWidth(1);
+			gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_LINE);
 
-		gl.glEnable(GL10.GL_LIGHTING);
-		gl.glEnable(GL10.GL_TEXTURE);
+			gl.glLineWidth(3);
 
-		gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_FILL);
+			gl.glColor4f(1, 0, 1, 1);
+			terrain.render(GL10.GL_TRIANGLES);
+			gl.glColor4f(1, 1, 1, 1);
+
+			gl.glLineWidth(1);
+
+			gl.glPolygonMode(GL10.GL_FRONT_AND_BACK, GL10.GL_FILL);
+
+			gl.glEnable(GL10.GL_LIGHTING);
+			gl.glEnable(GL10.GL_TEXTURE);
+		}
+
 		gl.glPopMatrix();
 
 	}

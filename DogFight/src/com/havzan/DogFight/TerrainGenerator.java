@@ -36,8 +36,9 @@ public class TerrainGenerator {
 	private boolean mIsGeoCreated = false;
 	private boolean mIsCollisionDataCreated = false;
 	private final VertexAttributes vertexAttributes;
+	private final float mHeightDelta;
 
-	public TerrainGenerator(float terrainSize, int gridWidth) {
+	public TerrainGenerator(float terrainSize, float heightDelta, int gridWidth) {
 		mWidth = gridWidth;
 		mHeight = gridWidth;
 		mNumVertX = mWidth + 1;
@@ -45,12 +46,14 @@ public class TerrainGenerator {
 		mHeightMap = new float[mNumVertX][mNumVertY];
 		mScaleX = terrainSize / gridWidth;
 		mScaleY = mScaleX;
-		mScaleZ = mScaleX;
+		mScaleZ = 1;
 		mStartX = -mWidth / 2;
 		mStartY = -mWidth / 2;
 		mVertexCount = mNumVertX * mNumVertY;
 		mTriangleCount = mWidth * mHeight * 2;
 		mIndiceCount = mTriangleCount * 3;
+		
+		mHeightDelta = heightDelta;
 
 		vertexAttributes = new VertexAttributes(new VertexAttribute(
 				Usage.Position, 3, "a_pos"), new VertexAttribute(
@@ -70,6 +73,8 @@ public class TerrainGenerator {
 	public void createCollisionData() {
 		if (!mIsGeoCreated)
 			createGeometry();
+		
+		mTriangles = new Plane[mTriangleCount];
 
 		vertexToFace = new ArrayList<ArrayList<Plane>>(mVertexCount);
 		for (int i = 0; i < mVertexCount; i++) {
@@ -125,7 +130,7 @@ public class TerrainGenerator {
 	}
 
 	private void createGridData() {
-		fillHeights(1.0f, 1.0f);
+		fillHeights(0, mHeightDelta/2);
 
 		mVertexPositions = new Vector3[mNumVertX * mNumVertY];
 
@@ -205,8 +210,8 @@ public class TerrainGenerator {
 				verticeBuffer[bufferIndex] = mVertexPositions[vertexIndex].x;
 				verticeBuffer[bufferIndex + 1] = mVertexPositions[vertexIndex].y;
 				verticeBuffer[bufferIndex + 2] = mVertexPositions[vertexIndex].z;
-				verticeBuffer[bufferIndex + 3] = j * step; // u
-				verticeBuffer[bufferIndex + 4] = i * step;// v
+				verticeBuffer[bufferIndex + 3] = j % 2 == 0 ? 0 : 1;// * step; // u
+				verticeBuffer[bufferIndex + 4] = i % 2 == 1 ? 0 : 1;//* step;// v
 				verticeBuffer[bufferIndex + 5] = mTriangles[vertexIndex].normal.x;
 				verticeBuffer[bufferIndex + 6] = mTriangles[vertexIndex].normal.y;
 				verticeBuffer[bufferIndex + 7] = mTriangles[vertexIndex].normal.z;

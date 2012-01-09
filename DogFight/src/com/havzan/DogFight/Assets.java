@@ -151,7 +151,7 @@ public class Assets {
 	}
 
 	public static Texture getTerrainTexture() {
-		return mAssetManager.get("data/greenchecker.png", Texture.class);
+		return mAssetManager.get("data/grass-texture.jpg", Texture.class);
 	}
 	//
 	// public static Texture getTexture(String path) {

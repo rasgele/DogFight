@@ -28,7 +28,7 @@ public class CameraMan {
 		mCamera = new PerspectiveCamera(mFoV, width, height);
 		mCamera.up.set(0, 0, 1);
 		mCamera.near = 5;
-		mCamera.far = 20000;
+		mCamera.far = 300000;
 		mCamera.direction.set(1, 0, 0);
 	}
 
