@@ -1,7 +1,8 @@
+package com.havzan.DogFight;
+
 import java.util.Random;
 
-
-public  class DiamondSquareAlgo {
+public class DiamondSquareAlgo {
 	public static float[][] fillHeights(double seed, double h, int mNumVertX) {
 		// size of grid to generate, note this must be a
 		// value 2^n+1
@@ -94,13 +95,13 @@ public  class DiamondSquareAlgo {
 		}
 
 		// print out the data
-//		for (float[] row : data) {
-//			for (float d : row) {
-//				System.out.printf("%8.3f ", d);
-//			}
-//			System.out.println();
-//		}
+		// for (float[] row : data) {
+		// for (float d : row) {
+		// System.out.printf("%8.3f ", d);
+		// }
+		// System.out.println();
+		// }
 		return data;
 	}
-	
+
 }
