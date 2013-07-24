@@ -1,4 +1,4 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -7,16 +7,17 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 public class SkyBox {
-	Mesh m_mesh;
+	Model m_mesh;
 	private Texture m_texture;
 
 	public void create() {
-		m_mesh = Assets.getAsset("data/sky2.obj", Mesh.class);
-		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
+		m_mesh = Assets.getAsset("data/sky2.obj", Model.class);
+		//Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
 
 		m_texture = Assets.getAsset("data/sky2.png", Texture.class);
 
@@ -70,7 +71,7 @@ public class SkyBox {
 				TextureWrap.ClampToEdge.getGLEnum());
 
 		m_texture.bind();
-		m_mesh.render(GL10.GL_TRIANGLES);
+		m_mesh.meshes.get(0).render(GL10.GL_TRIANGLES);
 
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_LIGHTING);

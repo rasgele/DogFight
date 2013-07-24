@@ -1,5 +1,6 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 
@@ -30,6 +31,7 @@ public class CameraMan {
 		mCamera.near = 5;
 		mCamera.far = 300000;
 		mCamera.direction.set(1, 0, 0);
+		Gdx.input.setInputProcessor(null);
 	}
 
 	public void trackMode(IWorldObject objToTrack) {
@@ -52,7 +54,7 @@ public class CameraMan {
 			Vector3 trackDir = mTrackedObjFrom.getDirection().tmp().nor();
 
 			getCamera().position.set(calculateCamPos(trackPos, trackDir).add(
-					getCamera().up.tmp().mul(trackOffsetHeight)));
+					getCamera().up.tmp().scl(trackOffsetHeight)));
 
 			getCamera().lookAt(trackPos.x, trackPos.y, trackPos.z);
 

@@ -1,6 +1,15 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.havzan.dogfight.game.GameLoopScreen;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.AircraftParams;
+import com.havzan.dogfight.game.model.GameModel;
+import com.havzan.dogfight.game.model.Missile;
+import com.havzan.dogfight.game.model.MissileParams;
+import com.havzan.dogfight.game.model.Terrain;
 
 public class DogFightGame extends Game{
 	MainGameScreen mMainGameScreen;
@@ -8,8 +17,35 @@ public class DogFightGame extends Game{
 	@Override
 	public void create() {
 		Assets.load();
-		mMainGameScreen = new MainGameScreen(this);
-		setScreen(mMainGameScreen);
+		//mMainGameScreen = new MainGameScreen(this);
+		GameLoopScreen mGameLoopScreen = new GameLoopScreen(this, getModel());
+		setScreen(mGameLoopScreen);
+	}
+	
+	GameModel getModel(){
+		GameModel model = new GameModel();
+		
+		Vector3 initDirection = new Vector3(1, 0, 0);
+		model.addPlayer(new Aircraft("Player", "f22", new AircraftParams(), initDirection)).setThrust(0.0f).setOrientation(new Matrix4().translate(10, 0, 0));
+		
+		Aircraft a2 = new Aircraft("Drone 1", "f22", new AircraftParams(), initDirection);
+		a2.setOrientation(new Matrix4().rotate(1, 0, 0, 30).translate(2000, 0, 0));
+		model.addAircraft(a2);
+		Aircraft a3 = new Aircraft("Drone 2", "f22", new AircraftParams(), initDirection);
+		a3.setOrientation(new Matrix4().translate(200, -100, 0));
+		model.addAircraft(a3);
+		Aircraft a4 = new Aircraft("Drone 3", "f22", new AircraftParams(), initDirection);
+		a4.setOrientation(new Matrix4().translate(0, 100,- 50));
+		model.addAircraft(a4);
+		
+		model.terrain = new Terrain(600, 600);
+		
+		Missile m = new Missile("Missile 1", new MissileParams(), model.getPlayer(), a3);
+		m.setOrientation(new Matrix4().translate(0, 0, 0));
+		model.addMissile(m);
+		
+		
+		return model;
 	}
 //	CameraMan mCamMan;
 //	Mesh mesh;

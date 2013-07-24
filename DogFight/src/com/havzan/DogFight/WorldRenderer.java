@@ -1,4 +1,4 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,18 +12,19 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.havzan.DogFight.HUD.TrackData;
-import com.havzan.DogFight.World.IWorldEventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.havzan.dogfight.HUD.TrackData;
+import com.havzan.dogfight.World.IWorldEventListener;
 
 public class WorldRenderer {
 	private static final String TAG = "RENDERER";
@@ -94,7 +95,7 @@ public class WorldRenderer {
 		mCamMan = new CameraMan(mWidth, mHeight);
 		mCamMan.trackMode(mWorld.getPlayer());
 		createUI();
-		Gdx.input.setInputProcessor(mUI);
+		//Gdx.input.setInputProcessor(mUI);
 
 		mSkybox = new SkyBox();
 		mSkybox.setCameraDirection(mCamMan.getCamera().direction.cpy());
@@ -127,12 +128,12 @@ public class WorldRenderer {
 								"data/ui/switchCamPressed.png",
 								"data/ui/switchCam.png"));
 
-		mCameraSwitchButton.width = mCameraSwitchButton.getPrefWidth();
-		mCameraSwitchButton.height = mCameraSwitchButton.getPrefHeight();
+		mCameraSwitchButton.setWidth(mCameraSwitchButton.getPrefWidth());
+		mCameraSwitchButton.setHeight(mCameraSwitchButton.getPrefHeight());
 
-		mCameraSwitchButton.setClickListener(new ClickListener() {
+		mCameraSwitchButton.addListener(new ClickListener() {
 			@Override
-			public void click(Actor actor) {
+			public void clicked (InputEvent event, float x, float y) {
 				mPresenter.onCameraSwitch();
 				// actor.action(RotateBy.$(360, 0.4f));
 				//
@@ -154,10 +155,10 @@ public class WorldRenderer {
 		mFireButton = new Button(ButtonStyleHelper.createDefaultButtonStyle(
 				"data/ui/firePressed.png", "data/ui/fire.png"));
 
-		mFireButton.setClickListener(new ClickListener() {
+		mFireButton.addListener(new ClickListener() {
 			@Override
-			public void click(Actor actor) {
-				actor.action(RotateBy.$(360, 0.4f));
+			public void clicked(InputEvent event, float x, float y) {
+				//actor.action(RotateBy.$(360, 0.4f));
 				mPresenter.onMissileFire();
 				// if (missile != null)
 				// MarkerManager.getInstance().unregisterMarker(missile);
@@ -176,10 +177,10 @@ public class WorldRenderer {
 						.createDefaultButtonStyle(
 								"data/ui/togMarkerPressed.png",
 								"data/ui/togMarker.png"));
-		mMarkerToggleButton.setClickListener(new ClickListener() {
+		mMarkerToggleButton.addListener(new ClickListener() {
 			@Override
-			public void click(Actor actor) {
-				actor.action(RotateBy.$(360, 0.4f));
+			public void clicked(InputEvent event, float x, float y){
+				//actor.action(RotateBy.$(360, 0.4f));
 				mPresenter.onMarkerToggle();
 			}
 		});
@@ -196,10 +197,10 @@ public class WorldRenderer {
 
 		Table rootTable = new Table();
 		rootTable.debug();
-		rootTable.width = Gdx.graphics.getWidth();
-		rootTable.height = Gdx.graphics.getHeight();
+		rootTable.setWidth(Gdx.graphics.getWidth());
+		rootTable.setHeight(Gdx.graphics.getHeight());
 
-		rootTable.size(100, 100);
+//		rootTable.size(100, 100);
 
 		rootTable.add(group).colspan(2).right().top().expandY();
 
@@ -209,7 +210,7 @@ public class WorldRenderer {
 
 		rootTable.layout();
 
-		rootTable.debug("all");
+		rootTable.debug();
 
 		mHUD = new HUD();
 
@@ -267,9 +268,9 @@ public class WorldRenderer {
 		Assets.getTerrainTexture().bind();
 
 		// Assets.getTerrainModel().render(GL10.GL_TRIANGLES);
-		Mesh terrain = Assets.getTerrainModel();
+		Model terrain = Assets.getTerrainModel();
 
-		terrain.render(GL10.GL_TRIANGLES);
+		terrain.meshes.items[0].render(GL10.GL_TRIANGLES);
 
 		// int i = 0;
 		// while (i < mWorld.mTerrain.mVertexNormals.size()) {
@@ -287,7 +288,7 @@ public class WorldRenderer {
 			gl.glLineWidth(3);
 
 			gl.glColor4f(1, 0, 1, 1);
-			terrain.render(GL10.GL_TRIANGLES);
+			terrain.meshes.items[0].render(GL10.GL_TRIANGLES);
 			gl.glColor4f(1, 1, 1, 1);
 
 			gl.glLineWidth(1);
@@ -322,15 +323,24 @@ public class WorldRenderer {
 	private void renderUI(float deltaTime) {
 		Aircraft aircraft = mWorld.getPlayer();
 		batch.begin();
-		String text = /*
+
+		Vector3 l = aircraft.getLocation();
+		Vector3 d = aircraft.getDirection();
+		
+		String text = "Position : " + String.format("%.3g %.3g %.3g \n", l.x, l.y, l.z); 
+		text += "Heading : " +  String.format("%.3g %.3g %.3g \n", d.x, d.y, d.z);
+		/*String text = 
 					 * "A :" + azimuth + "\nP :" + pitch + "\nR :" + roll +
 					 * "\nDeltaTime: " + deltaTime + "\nLean : " + (pitch -
 					 * initialRoll) / 45 + "\nPull : " + (roll - initialPitch) /
 					 * 30 + "\n" +
-					 */
-		"Position :" + aircraft.getLocation() + "\n" + "Heading :"
-				+ aircraft.getDirection() + "\n" + "Direction :"
-				+ aircraft.getDirection();
+					 
+		
+		
+				
+		"Position :" + String.format("%.3g%n", aircraft.getLocation() ) +  "\n" + "Heading :"
+				+ String.format("%.3g%n", aircraft.getDirection()) + "\n";*/
+					 
 		font.drawMultiLine(batch, text, 20, Gdx.graphics.getHeight() - 5);
 		batch.end();
 		mUI.act(deltaTime);
@@ -406,7 +416,7 @@ public class WorldRenderer {
 				aircraft.getCombinedMatrix());
 	}
 
-	private void renderModel(GL10 gl, Mesh model, Texture texture,
+	private void renderModel(GL10 gl, Model model, Texture texture,
 			Matrix4 matrix) {
 		if (matrix != null) {
 			gl.glPushMatrix();
@@ -417,7 +427,10 @@ public class WorldRenderer {
 		if (texture != null)
 			texture.bind();
 
-		model.render(GL10.GL_TRIANGLES);
+		Mesh m = model.meshes.get(0);
+String s =		m.getClass().getName();
+		m.render(GL10.GL_TRIANGLES);
+		
 		if (matrix != null)
 			gl.glPopMatrix();
 	}

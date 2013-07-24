@@ -1,4 +1,4 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +9,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Radar extends Group {
 	private Image mBackImage;
@@ -29,39 +30,39 @@ public class Radar extends Group {
 	}
 
 	public Radar(String name) {
-		super(name);
+		super();
 
 		Texture mBackTexture = new Texture(
 				Gdx.files.internal("data/ui/radar.png"), true);
-		mBackImage = new Image("radar", mBackTexture);
+		mBackImage = new Image(mBackTexture);
 
-		mBackImage.touchable = false;
+		mBackImage.setTouchable(Touchable.disabled);
 		addActor(mBackImage);
 
-		width = 128;
-		height = 128;
+		setWidth(128);
+		setHeight(128);
 
 		mTrackableTex = new Texture(Gdx.files.internal("data/ui/red.png"), true);
 		mTrackableTex.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 
-	@Override
-	public boolean touchDown(float x, float y, int pointer) {
-		return false;
-	}
-
-	@Override
-	public void touchDragged(float x, float y, int pointer) {
-
-		return;
-	}
-
-	@Override
-	public void touchUp(float x, float y, int pointer) {
-		// mSliding = false;
-		focus(null, pointer);
-		return;
-	}
+//	@Override
+//	public boolean touchDown(float x, float y, int pointer) {
+//		return false;
+//	}
+//
+//	@Override
+//	public void touchDragged(float x, float y, int pointer) {
+//
+//		return;
+//	}
+//
+//	@Override
+//	public void touchUp(float x, float y, int pointer) {
+//		// mSliding = false;
+//		focus(null, pointer);
+//		return;
+//	}
 
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
@@ -71,8 +72,8 @@ public class Radar extends Group {
 		float texWid = 4;
 		float texHei = 4;
 
-		float offsetX = this.x + this.width / 2 - texWid / 2;
-		float offsetY = this.y + this.height / 2 - texHei / 2;
+		float offsetX = this.getX() + this.getWidth() / 2 - texWid / 2;
+		float offsetY = this.getY() + this.getHeight() / 2 - texHei / 2;
 
 		for (TrackableData trackable : mTrackables) {
 
@@ -90,7 +91,7 @@ public class Radar extends Group {
 	public void addObjectToTrack(IWorldObject trackable) {
 		TrackableData data = new TrackableData();
 		data.trackable = trackable;
-		data.image = new Image("image", mTrackableTex);
+		data.image = new Image(mTrackableTex);
 
 		mTrackables.add(data);
 	}
@@ -119,7 +120,7 @@ public class Radar extends Group {
 
 				Vector2 toTrackableNorm = toTrackableVector.nor();
 				float toTrackableDistancePixels = toTrackableDistance
-						/ getMaxDistance() * this.width / 2;
+						/ getMaxDistance() * this.getWidth() / 2;
 				
 				//Gdx.app.log(TAG , "Y: " + toTrackableNorm.x + "    Z: " + toTrackableNorm.y);
 				

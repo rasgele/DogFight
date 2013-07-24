@@ -1,12 +1,17 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 
@@ -193,7 +198,7 @@ public class TerrainGenerator {
 		}
 	}
 
-	public Mesh createMesh() {
+	public Model createMesh() {
 		Mesh mesh = new Mesh(false, mVertexCount, mIndiceCount,
 				vertexAttributes);
 
@@ -223,8 +228,12 @@ public class TerrainGenerator {
 
 		mesh.setVertices(verticeBuffer);
 		mesh.setIndices(mIndices);
-
-		return mesh;
+		
+		ModelBuilder mb =  new ModelBuilder();
+		mb.begin();
+		MeshPart part = mb.part("terrain", mesh, GL10.GL_TRIANGLES, new Material());
+		
+		return mb.end();
 	}
 
 	void fillHeights(double seed, double h) {

@@ -1,4 +1,4 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,8 +43,8 @@ public class HUD extends Group {
 			float texWid = tex.getWidth();
 			float texHei = tex.getHeight();
 
-			float offsetX = this.x + data.mPosition.x - texWid / 2;
-			float offsetY = this.y + data.mPosition.y - texHei / 2;
+			float offsetX = this.getX() + data.mPosition.x - texWid / 2;
+			float offsetY = this.getY() + data.mPosition.y - texHei / 2;
 
 			batch.draw(tex, offsetX, offsetY, texWid, texHei);
 		}

@@ -1,4 +1,6 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
+
+import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -12,22 +14,25 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 public class Assets {
 
-	private static Mesh mTerrainMesh = null;
+	private static Model mTerrainMesh = null;
 
 	public static class MeshLoader extends
-			AsynchronousAssetLoader<Mesh, MeshLoader.MeshLoaderParams> {
+			AsynchronousAssetLoader<Model, MeshLoader.MeshLoaderParams> {
 		public MeshLoader(FileHandleResolver resolver) {
 			super(resolver);
 			// TODO Auto-generated constructor stub
 		}
 
 		public static class MeshLoaderParams extends
-				AssetLoaderParameters<Mesh> {
+				AssetLoaderParameters<Model> {
 
 		}
 
@@ -39,9 +44,11 @@ public class Assets {
 		}
 
 		@Override
-		public Mesh loadSync(AssetManager manager, String fileName,
+		public Model loadSync(AssetManager manager, String fileName,
 				MeshLoaderParams parameter) {
-			return ObjLoader.loadObj(Gdx.files.internal(fileName).read());
+			ObjLoader loader;
+			loader = new ObjLoader();
+			return loader.loadModel(Gdx.files.internal(fileName));
 		}
 
 		@Override
@@ -66,8 +73,10 @@ public class Assets {
 			}
 		});
 
-		mAssetManager.setLoader(Mesh.class, new MeshLoader(
+		mAssetManager.setLoader(Model.class, new MeshLoader(
 				new InternalFileHandleResolver()));
+		
+		mAssetManager.load("data/ui/skinUI.json", Skin.class);		
 
 		TextureParameter para = new TextureLoader.TextureParameter();
 		para.genMipMaps = true;
@@ -94,7 +103,7 @@ public class Assets {
 		mAssetManager.load("data/ui/fire.png", Texture.class);
 		mAssetManager.load("data/ui/firePressed.png", Texture.class);
 		mAssetManager.load("data/ui/radar.png", Texture.class);
-		mAssetManager.load("data/ui/red.png", Texture.class);
+		//mAssetManager.load("data/ui/red.png", Texture.class);
 		mAssetManager.load("data/ui/sliderback.png", Texture.class);
 		mAssetManager.load("data/ui/sliderHandle.png", Texture.class);
 		mAssetManager.load("data/ui/switchCam.png", Texture.class);
@@ -102,25 +111,31 @@ public class Assets {
 		mAssetManager.load("data/ui/togMarkerPressed.png", Texture.class);
 		mAssetManager.load("data/ui/togMarker.png", Texture.class);
 
-		mAssetManager.load("data/grass.obj", Mesh.class);
-		mAssetManager.load("data/missile.obj", Mesh.class);
-		mAssetManager.load("data/grid.obj", Mesh.class);
-		mAssetManager.load("data/gridHills.obj", Mesh.class);
-		mAssetManager.load("data/marker.obj", Mesh.class);
-		mAssetManager.load(AircraftModelPath, Mesh.class);
-		mAssetManager.load("data/sky.obj", Mesh.class);
-		mAssetManager.load("data/sphere.obj", Mesh.class);
-		mAssetManager.load("data/xyzplaneZ.obj", Mesh.class);
+		mAssetManager.load("data/grass.obj", Model.class);
+		mAssetManager.load("data/missile.obj", Model.class);
+		mAssetManager.load("data/grid.obj", Model.class);
+		mAssetManager.load("data/gridHills.obj", Model.class);
+		mAssetManager.load("data/marker.obj", Model.class);
+		mAssetManager.load(AircraftModelPath, Model.class);
+		mAssetManager.load("data/sky.obj", Model.class);
+		mAssetManager.load("data/sphere.obj", Model.class);
+		mAssetManager.load("data/xyzplaneZ.obj", Model.class);
 
-		mAssetManager.load("data/sky2.obj", Mesh.class);
+		mAssetManager.load("data/sky2.obj", Model.class);
 		mAssetManager.load("data/sky2.png", Texture.class);
+		
+
 
 		mAssetManager.finishLoading();
 
 		Texture.setAssetManager(mAssetManager);
+		
+		// TODO initialize this properly
+		models.put("f22", getAircraftModel());
+		models.put("missile", getMissileModel());
 	}
 
-	public static void setTerrainModel(Mesh model) {
+	public static void setTerrainModel(Model model) {
 		mTerrainMesh = model;
 	}
 
@@ -128,26 +143,26 @@ public class Assets {
 		return mAssetManager.get(name, type);
 	}
 
-	public static Mesh getAircraftModel() {
-		return mAssetManager.get(AircraftModelPath, Mesh.class);
+	public static Model getAircraftModel() {
+		return mAssetManager.get(AircraftModelPath, Model.class);
 	}
 
 	public static Texture getAircraftTexture() {
 		return mAssetManager.get("data/camo.jpg", Texture.class);
 	}
 
-	public static Mesh getMissileModel() {
-		return mAssetManager.get("data/missile.obj", Mesh.class);
+	public static Model getMissileModel() {
+		return mAssetManager.get("data/missile.obj", Model.class);
 	}
 
 	public static Texture getMissileTexture() {
 		return mAssetManager.get("data/camo.jpg", Texture.class);
 	}
 
-	public static Mesh getTerrainModel() {
+	public static Model getTerrainModel() {
 		if (Assets.mTerrainMesh != null)
 			return mTerrainMesh;
-		return mAssetManager.get("data/gridHills.obj", Mesh.class);
+		return mAssetManager.get("data/gridHills.obj", Model.class);
 	}
 
 	public static Texture getTerrainTexture() {
@@ -161,5 +176,15 @@ public class Assets {
 	// public static Mesh getObjMesh(String path) {
 	// return null;
 	// }
+	
+	private static HashMap<String, Model> models = new HashMap<String, Model>();
+	
+	public static Model getModelById(String id){
+		return models.get(id);
+	}
+	
+	public static Skin getSkinUI(){
+		return mAssetManager.get("data/ui/skinUI.json", Skin.class);
+	}
 
 }

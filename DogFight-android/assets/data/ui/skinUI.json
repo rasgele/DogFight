@@ -1,0 +1,35 @@
+{
+   com.badlogic.gdx.graphics.Color: {
+      red: { a: 1, b: 0, g: 0, r: 1 },
+      green: { a: 1, b: 0, g: 1, r: 0 },
+      blue: { a: 1, b: 1, g: 0, r: 0 },
+      white: { a: 1, b: 1, g: 1, r: 1 },
+      black: { a: 1, b: 0, g: 0, r: 0 },
+   },
+   com.badlogic.gdx.graphics.g2d.BitmapFont: {
+      candara32: { file: candara32.fnt },
+      candara14: { file: candara14.fnt },
+   },
+   
+   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+      fire: { up: fire, down: firePressed },
+      switchCam: { up: switchCam, down: switchCamPressed },
+      toggleMarker: { up: togMarker, down: togMarkerPressed },
+   },
+   com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+       default-horizontal: { background: sliderback, knob: sliderHandle },
+       default-vertical: { background: sliderbackv, knob: sliderHandle },
+   },
+
+   com.havzan.dogfight.game.ui.Radar$RadarStyle: {
+   	   default: { background: radar, aircraft: radar_a, missile: radar_m },
+   },
+   
+   com.havzan.dogfight.game.ui.HeadUpDisplay$HeadUpDisplayStyle: {
+   	   default: { trackingDrawable: triangle, lockedDrawable: locked, elevationDrawable: elevation },
+   },
+   
+   com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+   	   default: { font: candara14, fontColorSelected: red, fontColorUnselected: white, selection: listSelection },
+   },
+}

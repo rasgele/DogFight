@@ -1,8 +1,9 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Mesh;
-import com.havzan.DogFight.WorldRenderer.IWorldPresenter;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.havzan.dogfight.WorldRenderer.IWorldPresenter;
 
 public class WorldPresenter implements IWorldPresenter {
 
@@ -11,7 +12,7 @@ public class WorldPresenter implements IWorldPresenter {
 
 	public WorldPresenter(World world) {
 		TerrainGenerator mTerrainGenerator = new TerrainGenerator(20000, 5000, 128);
-		Mesh terrainMesh = mTerrainGenerator.createMesh();
+		Model terrainMesh = mTerrainGenerator.createMesh();
 		Assets.setTerrainModel(terrainMesh);
 		mWorld = world;
 		mWorldRenderer = new WorldRenderer(this, mWorld,

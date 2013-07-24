@@ -1,19 +1,21 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class Missile implements IWorldObject {
 	private static final String TAG = "Aircraft";
 	private static final float MaxSpeedPerSecond = 900;
 	float mFlightTime;
-	Mesh m_mesh;
+	Model m_mesh;
 	Texture m_texture;
 
 	Vector3 mLocation;
@@ -44,9 +46,11 @@ public class Missile implements IWorldObject {
 	}
 
 	public Missile create() {
-		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/missile.obj")
-				.read());
-		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
+		ObjLoader loader = new ObjLoader();
+		m_mesh = loader.loadModel(Gdx.files.internal("data/missile.obj"));
+		BoundingBox tmpBox = new BoundingBox();
+		m_mesh.calculateBoundingBox(tmpBox);
+		Gdx.app.log("ObjTest", "obj bounds: " + tmpBox);
 		m_texture = new Texture(Gdx.files.internal("data/camo.jpg"), true);
 		m_texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		return this;
@@ -167,7 +171,9 @@ public class Missile implements IWorldObject {
 
 		m_texture.bind();
 
-		m_mesh.render(GL10.GL_TRIANGLES);
+		//m_mesh.render();
+		
+		m_mesh.meshes.items[0].render(GL10.GL_TRIANGLES);
 
 		gl.glPopMatrix();
 	}

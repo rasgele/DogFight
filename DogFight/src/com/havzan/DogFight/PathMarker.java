@@ -1,15 +1,17 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class PathMarker {
 	LinkedList<Vector3> m_positions = new LinkedList<Vector3>();
@@ -17,7 +19,7 @@ public class PathMarker {
 	float m_minDistance = 3.0f;
 	Vector3 m_lastPos = null;
 	
-	Mesh m_mesh;
+	Model m_mesh;
 	Texture m_texture;
 	Color mColor;
 	
@@ -31,8 +33,11 @@ public class PathMarker {
 	
 	void create()
 	{
-		m_mesh = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
-		Gdx.app.log("ObjTest", "obj bounds: " + m_mesh.calculateBoundingBox());
+		ObjLoader loader = new ObjLoader();
+		m_mesh = loader.loadModel(Gdx.files.internal("data/sphere.obj"));
+		BoundingBox bb = new BoundingBox();
+		m_mesh.calculateBoundingBox(bb);
+		Gdx.app.log("ObjTest", "obj bounds: " + bb);
 		m_texture = new Texture(Gdx.files.internal("data/ui/red.png"), true);
 		m_texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		m_immediateRenderer = new ImmediateModeRenderer10();
@@ -74,7 +79,9 @@ public class PathMarker {
 			gl.glTranslatef(pos.x, pos.y, pos.z);			
 			gl.glScalef(finalScale - step * stepCount, finalScale - step * stepCount, finalScale - step * stepCount);
 			stepCount++;
-			m_mesh.render(GL10.GL_TRIANGLES);
+			//m_mesh.render();
+			
+			m_mesh.meshes.items[0].render(GL10.GL_TRIANGLES);
 			
 			gl.glPopMatrix();
 		}

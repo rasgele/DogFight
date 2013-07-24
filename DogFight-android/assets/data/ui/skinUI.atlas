@@ -1,0 +1,146 @@
+
+skinUI.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+candara32
+  rotate: false
+  xy: 1, 231
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+elevation
+  rotate: false
+  xy: 259, 127
+  size: 60, 360
+  orig: 60, 360
+  offset: 0, 0
+  index: -1
+sliderback
+  rotate: false
+  xy: 1, 197
+  size: 256, 32
+  orig: 256, 32
+  offset: 0, 0
+  index: -1
+sliderbackv
+  rotate: false
+  xy: 321, 231
+  size: 32, 256
+  orig: 32, 256
+  offset: 0, 0
+  index: -1
+candara14
+  rotate: false
+  xy: 1, 67
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+marker
+  rotate: false
+  xy: 355, 359
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+radar
+  rotate: false
+  xy: 355, 229
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+fire
+  rotate: false
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+firePressed
+  rotate: false
+  xy: 131, 131
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+buttonBG
+  rotate: false
+  xy: 321, 197
+  size: 32, 32
+  split: 6, 5, 6, 5
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+locked
+  rotate: false
+  xy: 67, 33
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+radar_a
+  rotate: false
+  xy: 131, 97
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+radar_m
+  rotate: false
+  xy: 197, 163
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sliderHandle
+  rotate: false
+  xy: 321, 163
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+switchCam
+  rotate: false
+  xy: 355, 195
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+switchCamPressed
+  rotate: false
+  xy: 321, 129
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+togMarker
+  rotate: false
+  xy: 355, 161
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+togMarkerPressed
+  rotate: false
+  xy: 389, 195
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+triangle
+  rotate: false
+  xy: 389, 161
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+listSelection
+  rotate: false
+  xy: 485, 479
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1

@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
-	<classpathentry kind="lib" path="/DogFight/libs/gdx.jar" sourcepath="/DogFight/libs/gdx-sources.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DogFight"/>
-	<classpathentry kind="output" path="bin/classes"/>
+    <classpathentry kind="src" path="src"/>
+    <classpathentry kind="src" path="gen"/>
+    <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+    <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+    <classpathentry combineaccessrules="false" kind="src" path="/DogFight"/>
+    <classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+    <classpathentry kind="output" path="bin/classes"/>
+    <classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
+    <classpathentry kind="lib" path="/DogFight/libs/gdx.jar" sourcepath="/DogFight/libs/gdx-sources.jar"/>
+    <classpathentry exported="true" kind="lib" path="/DogFight/libs/tween-engine-api.jar" sourcepath="/DogFight/libs/tween-engine-api-sources.jar"/>
 </classpath>

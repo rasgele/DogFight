@@ -1,12 +1,12 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import java.util.Random;
 
 public class DiamondSquareAlgo {
-	public static float[][] fillHeights(double seed, double h, int mNumVertX) {
+	public static float[][] fillHeights(double seed, double h, int numberOfVertice) {
 		// size of grid to generate, note this must be a
 		// value 2^n+1
-		final int DATA_SIZE = mNumVertX;
+		final int DATA_SIZE = numberOfVertice;
 		// an initial seed value for the corners of the data
 		final float SEED = (float) seed;
 		float[][] data = new float[DATA_SIZE][DATA_SIZE];
