@@ -25,11 +25,11 @@
    	   default: { background: radar, aircraft: radar_a, missile: radar_m },
    },
    
-   com.havzan.dogfight.game.ui.HeadUpDisplay$HeadUpDisplayStyle: {
-   	   default: { trackingDrawable: triangle, lockedDrawable: locked, elevationDrawable: elevation },
-   },
-   
    com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
    	   default: { font: candara14, fontColorSelected: red, fontColorUnselected: white, selection: listSelection },
+   },
+   
+   com.havzan.dogfight.game.ui.HeadUpDisplay$HeadUpDisplayStyle: {
+   	   default: { trackingDrawable: triangle, lockedDrawable: locked, elevationDrawable: elevation },
    },
 }

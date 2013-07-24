@@ -5,70 +5,77 @@ filter: Nearest,Nearest
 repeat: none
 candara32
   rotate: false
-  xy: 1, 231
+  xy: 1, 233
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 elevation
   rotate: false
-  xy: 259, 127
+  xy: 259, 129
   size: 60, 360
   orig: 60, 360
   offset: 0, 0
   index: -1
 sliderback
   rotate: false
-  xy: 1, 197
+  xy: 1, 199
   size: 256, 32
   orig: 256, 32
   offset: 0, 0
   index: -1
 sliderbackv
   rotate: false
-  xy: 321, 231
+  xy: 321, 233
   size: 32, 256
   orig: 32, 256
   offset: 0, 0
   index: -1
 candara14
   rotate: false
-  xy: 1, 67
+  xy: 1, 69
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 marker
   rotate: false
-  xy: 355, 359
+  xy: 355, 361
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 radar
   rotate: false
-  xy: 355, 229
+  xy: 355, 231
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+red
+  rotate: false
+  xy: 321, 101
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 fire
   rotate: false
-  xy: 1, 1
+  xy: 1, 3
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 firePressed
   rotate: false
-  xy: 131, 131
+  xy: 131, 133
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 buttonBG
   rotate: false
-  xy: 321, 197
+  xy: 451, 197
   size: 32, 32
   split: 6, 5, 6, 5
   orig: 32, 32
@@ -76,70 +83,70 @@ buttonBG
   index: -1
 locked
   rotate: false
-  xy: 67, 33
+  xy: 67, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 radar_a
   rotate: false
-  xy: 131, 97
+  xy: 131, 99
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 radar_m
   rotate: false
-  xy: 197, 163
+  xy: 197, 165
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sliderHandle
   rotate: false
-  xy: 321, 163
+  xy: 451, 163
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 switchCam
   rotate: false
-  xy: 355, 195
+  xy: 451, 129
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 switchCamPressed
   rotate: false
-  xy: 321, 129
+  xy: 67, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 togMarker
   rotate: false
-  xy: 355, 161
+  xy: 165, 99
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 togMarkerPressed
   rotate: false
-  xy: 389, 195
+  xy: 101, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 triangle
   rotate: false
-  xy: 389, 161
+  xy: 101, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 listSelection
   rotate: false
-  xy: 485, 479
+  xy: 485, 481
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
