@@ -1,8 +1,8 @@
-package com.havzan.dogfight.game.cameras;
+package com.havzan.DogFight.game.cameras;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.DogFight.game.model.IModelObject;
 
 public class ObjectToObjectCamera implements ICameraController {
 	Camera camera;

@@ -1,4 +1,4 @@
-package com.havzan.dogfight.game.model;
+package com.havzan.DogFight.game.model;
 
 public class Terrain {
 	public final int sizeX;

@@ -1,4 +1,4 @@
-package com.havzan.dogfight;
+package com.havzan.DogFight;
 
 public class Marker {
 

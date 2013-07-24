@@ -1,4 +1,4 @@
-package com.havzan.dogfight.game.model;
+package com.havzan.DogFight.game.model;
 
 import com.badlogic.gdx.math.Vector3;
 

@@ -1,4 +1,4 @@
-package com.havzan.dogfight;
+package com.havzan.DogFight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;

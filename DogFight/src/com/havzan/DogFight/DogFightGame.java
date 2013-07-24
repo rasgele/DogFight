@@ -1,15 +1,15 @@
-package com.havzan.dogfight;
+package com.havzan.DogFight;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.game.GameLoopScreen;
-import com.havzan.dogfight.game.model.Aircraft;
-import com.havzan.dogfight.game.model.AircraftParams;
-import com.havzan.dogfight.game.model.GameModel;
-import com.havzan.dogfight.game.model.Missile;
-import com.havzan.dogfight.game.model.MissileParams;
-import com.havzan.dogfight.game.model.Terrain;
+import com.havzan.DogFight.game.GameLoopScreen;
+import com.havzan.DogFight.game.model.Aircraft;
+import com.havzan.DogFight.game.model.AircraftParams;
+import com.havzan.DogFight.game.model.GameModel;
+import com.havzan.DogFight.game.model.Missile;
+import com.havzan.DogFight.game.model.MissileParams;
+import com.havzan.DogFight.game.model.Terrain;
 
 public class DogFightGame extends Game{
 	MainGameScreen mMainGameScreen;

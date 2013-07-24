@@ -1,4 +1,4 @@
-package com.havzan.dogfight;
+package com.havzan.DogFight;
 
 import java.util.Random;
 

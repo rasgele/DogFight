@@ -1,6 +1,6 @@
-package com.havzan.dogfight.game.physics;
+package com.havzan.DogFight.game.physics;
 
-import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.DogFight.game.model.Aircraft;
 
 public interface AircraftSolver {
 	public void update(Aircraft aircraft, float deltaSecs);

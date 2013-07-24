@@ -1,4 +1,4 @@
-package com.havzan.dogfight;
+package com.havzan.DogFight;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -17,14 +17,13 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.havzan.dogfight.HUD.TrackData;
-import com.havzan.dogfight.World.IWorldEventListener;
+import com.havzan.DogFight.HUD.TrackData;
+import com.havzan.DogFight.World.IWorldEventListener;
 
 public class WorldRenderer {
 	private static final String TAG = "RENDERER";

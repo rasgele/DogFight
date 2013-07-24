@@ -1,7 +1,7 @@
-package com.havzan.dogfight.game.ui;
+package com.havzan.DogFight.game.ui;
 
 import com.badlogic.gdx.math.Vector2;
-import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.DogFight.game.model.Aircraft;
 
 public class HUDTrackingData implements Comparable<HUDTrackingData> {
 	public Vector2 mPosition = new Vector2();

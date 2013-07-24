@@ -1,8 +1,8 @@
-package com.havzan.dogfight.game;
+package com.havzan.DogFight.game;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.Terrain;
+import com.havzan.DogFight.Terrain;
 
 public class Scenario {
 	Terrain terrain;

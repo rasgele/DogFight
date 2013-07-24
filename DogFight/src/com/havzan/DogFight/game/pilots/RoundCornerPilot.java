@@ -1,10 +1,10 @@
-package com.havzan.dogfight.game.pilots;
+package com.havzan.DogFight.game.pilots;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.MathUtil;
-import com.havzan.dogfight.game.GameWorld;
-import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.DogFight.MathUtil;
+import com.havzan.DogFight.game.GameWorld;
+import com.havzan.DogFight.game.model.Aircraft;
 
 public class RoundCornerPilot {
 	private static final String TAG = "RCPilot";

@@ -1,4 +1,4 @@
-package com.havzan.dogfight.game.ui;
+package com.havzan.DogFight.game.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +8,9 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.MathUtil;
-import com.havzan.dogfight.game.model.Aircraft;
-import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.DogFight.MathUtil;
+import com.havzan.DogFight.game.model.Aircraft;
+import com.havzan.DogFight.game.model.IModelObject;
 
 public class HUDCalculator {
 	private static final float MAX_TRACK_ANGLE = (float) (Math.PI / 4);

@@ -1,4 +1,4 @@
-package com.havzan.dogfight.game.model;
+package com.havzan.DogFight.game.model;
 
 public interface ModelObjectChangeLister{
 	public void missileAdded(Missile missile);

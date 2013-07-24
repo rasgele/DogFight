@@ -1,10 +1,10 @@
-package com.havzan.dogfight.game.cameras;
+package com.havzan.DogFight.game.cameras;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.game.GameWorld;
-import com.havzan.dogfight.game.model.GameModel;
-import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.DogFight.game.GameWorld;
+import com.havzan.DogFight.game.model.GameModel;
+import com.havzan.DogFight.game.model.IModelObject;
 
 public class TrackCamera implements ICameraController {
 	private IModelObject trackObj;

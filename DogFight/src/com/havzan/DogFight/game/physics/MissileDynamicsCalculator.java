@@ -1,10 +1,10 @@
-package com.havzan.dogfight.game.physics;
+package com.havzan.DogFight.game.physics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.dogfight.MathUtil;
-import com.havzan.dogfight.game.model.Missile;
+import com.havzan.DogFight.MathUtil;
+import com.havzan.DogFight.game.model.Missile;
 
 public class MissileDynamicsCalculator implements MissileSolver {
 	private static final float Range = 2000;
