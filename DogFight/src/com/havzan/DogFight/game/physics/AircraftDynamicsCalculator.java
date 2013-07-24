@@ -1,9 +1,9 @@
-package com.havzan.DogFight.game.physics;
+package com.havzan.dogfight.game.physics;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.DogFight.game.model.Aircraft;
-import com.havzan.DogFight.game.model.AircraftParams;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.AircraftParams;
 
 public class AircraftDynamicsCalculator implements AircraftSolver {
 	private static Vector3 mTempVec3 = new Vector3();

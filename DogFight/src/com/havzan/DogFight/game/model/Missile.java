@@ -1,7 +1,7 @@
-package com.havzan.DogFight.game.model;
+package com.havzan.dogfight.game.model;
 
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.DogFight.IWorldObject;
+import com.havzan.dogfight.IWorldObject;
 
 public class Missile extends BaseModelObject {
 	public static final Vector3 InitDirection = new Vector3(1, 0, 0);

@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game.ui;
+package com.havzan.dogfight.game.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,10 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.havzan.DogFight.MathUtil;
-import com.havzan.DogFight.game.GameWorld;
-import com.havzan.DogFight.game.model.Aircraft;
-import com.havzan.DogFight.game.model.GameModel;
+import com.havzan.dogfight.MathUtil;
+import com.havzan.dogfight.game.GameWorld;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.GameModel;
 
 public class HeadUpDisplay extends Group {
 

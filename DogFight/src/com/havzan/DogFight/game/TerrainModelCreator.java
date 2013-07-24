@@ -1,7 +1,7 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.havzan.DogFight.game.model.Terrain;
+import com.havzan.dogfight.game.model.Terrain;
 
 public class TerrainModelCreator {
 

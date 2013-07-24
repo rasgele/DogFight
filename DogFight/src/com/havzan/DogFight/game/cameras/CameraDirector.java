@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game.cameras;
+package com.havzan.dogfight.game.cameras;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.havzan.DogFight.game.model.IModelObject;
+import com.havzan.dogfight.game.model.IModelObject;
 
 public class CameraDirector {
 	ArrayList<ICameraController> controllers = new ArrayList<ICameraController>();

@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game.cameras;
+package com.havzan.dogfight.game.cameras;
 
 import com.badlogic.gdx.graphics.Camera;
 

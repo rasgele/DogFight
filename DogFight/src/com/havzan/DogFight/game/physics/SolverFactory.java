@@ -1,6 +1,6 @@
-package com.havzan.DogFight.game.physics;
+package com.havzan.dogfight.game.physics;
 
-import com.havzan.DogFight.game.physics.AircraftSolver;
+import com.havzan.dogfight.game.physics.AircraftSolver;
 
 public class SolverFactory {
 

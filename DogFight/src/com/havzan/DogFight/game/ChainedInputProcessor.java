@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import java.util.ArrayList;
 

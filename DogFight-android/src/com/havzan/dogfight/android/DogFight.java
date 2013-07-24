@@ -3,7 +3,7 @@ package com.havzan.dogfight.android;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.havzan.DogFight.DogFightGame;
+import com.havzan.dogfight.DogFightGame;
 
 public class DogFight extends AndroidApplication {
     /** Called when the activity is first created. */

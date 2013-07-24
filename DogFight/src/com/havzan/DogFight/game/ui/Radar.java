@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game.ui;
+package com.havzan.dogfight.game.ui;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,11 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.havzan.DogFight.MathUtil;
-import com.havzan.DogFight.game.model.Aircraft;
-import com.havzan.DogFight.game.model.GameModel;
-import com.havzan.DogFight.game.model.IModelObject;
-import com.havzan.DogFight.game.model.Missile;
+import com.havzan.dogfight.MathUtil;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.GameModel;
+import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.dogfight.game.model.Missile;
 
 public class Radar extends Group {
 	private Image mBackImage;

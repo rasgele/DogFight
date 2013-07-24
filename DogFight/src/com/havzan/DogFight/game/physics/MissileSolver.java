@@ -1,6 +1,6 @@
-package com.havzan.DogFight.game.physics;
+package com.havzan.dogfight.game.physics;
 
-import com.havzan.DogFight.game.model.Missile;
+import com.havzan.dogfight.game.model.Missile;
 
 public interface MissileSolver {
 	enum UpdateResult{

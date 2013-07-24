@@ -1,11 +1,11 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
-import com.havzan.DogFight.game.model.IModelObject;
+import com.havzan.dogfight.game.model.IModelObject;
 
 public class CameraMan {
 	private PerspectiveCamera camera;

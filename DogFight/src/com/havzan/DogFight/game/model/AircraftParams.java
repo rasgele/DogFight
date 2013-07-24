@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game.model;
+package com.havzan.dogfight.game.model;
 
 public class AircraftParams {
 	public final float MaxSpeedPerSec;

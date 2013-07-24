@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +17,12 @@ import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.havzan.arena3D.CoordinateSystem;
 import com.havzan.arena3D.Grid;
-import com.havzan.DogFight.Assets;
-import com.havzan.DogFight.game.model.Aircraft;
-import com.havzan.DogFight.game.model.GameModel;
-import com.havzan.DogFight.game.model.IModelObject;
-import com.havzan.DogFight.game.model.Missile;
-import com.havzan.DogFight.game.model.ModelObjectChangeLister;
+import com.havzan.dogfight.Assets;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.GameModel;
+import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.dogfight.game.model.Missile;
+import com.havzan.dogfight.game.model.ModelObjectChangeLister;
 
 public class GameLoopRenderer {
 	

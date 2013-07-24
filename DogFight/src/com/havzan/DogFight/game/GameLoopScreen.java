@@ -1,11 +1,11 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TableToolkit;
-import com.havzan.DogFight.DogFightGame;
-import com.havzan.DogFight.game.model.GameModel;
-import com.havzan.DogFight.game.ui.GameUI;
+import com.havzan.dogfight.DogFightGame;
+import com.havzan.dogfight.game.model.GameModel;
+import com.havzan.dogfight.game.ui.GameUI;
 
 public class GameLoopScreen implements Screen{
 

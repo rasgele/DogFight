@@ -1,10 +1,10 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import com.havzan.DogFight.HUD;
-import com.havzan.DogFight.game.model.Aircraft;
+import com.havzan.dogfight.HUD;
+import com.havzan.dogfight.game.model.Aircraft;
 
 public class PlayerController {
 	private int mInitialRoll;

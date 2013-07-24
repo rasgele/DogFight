@@ -1,7 +1,7 @@
 package com.havzan.DogFight;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.havzan.DogFight.DogFightGame;
+import com.havzan.dogfight.DogFightGame;
 
 public class DogFightDesktop {
 

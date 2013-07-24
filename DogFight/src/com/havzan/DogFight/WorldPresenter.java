@@ -1,8 +1,8 @@
-package com.havzan.DogFight;
+package com.havzan.dogfight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.havzan.DogFight.WorldRenderer.IWorldPresenter;
+import com.havzan.dogfight.WorldRenderer.IWorldPresenter;
 
 public class WorldPresenter implements IWorldPresenter {
 

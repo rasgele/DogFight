@@ -1,23 +1,23 @@
-package com.havzan.DogFight.game;
+package com.havzan.dogfight.game;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.Gdx;
-import com.havzan.DogFight.game.cameras.CameraDirector;
-import com.havzan.DogFight.game.model.Aircraft;
-import com.havzan.DogFight.game.model.GameModel;
-import com.havzan.DogFight.game.model.IModelObject;
-import com.havzan.DogFight.game.model.Missile;
-import com.havzan.DogFight.game.model.MissileParams;
-import com.havzan.DogFight.game.model.ModelObjectChangeLister;
-import com.havzan.DogFight.game.physics.AircraftSolver;
-import com.havzan.DogFight.game.physics.MissileSolver;
-import com.havzan.DogFight.game.physics.MissileSolver.UpdateResult;
-import com.havzan.DogFight.game.physics.SolverFactory;
-import com.havzan.DogFight.game.pilots.RoundCornerPilot;
-import com.havzan.DogFight.game.ui.GameUI;
+import com.havzan.dogfight.game.cameras.CameraDirector;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.GameModel;
+import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.dogfight.game.model.Missile;
+import com.havzan.dogfight.game.model.MissileParams;
+import com.havzan.dogfight.game.model.ModelObjectChangeLister;
+import com.havzan.dogfight.game.physics.AircraftSolver;
+import com.havzan.dogfight.game.physics.MissileSolver;
+import com.havzan.dogfight.game.physics.SolverFactory;
+import com.havzan.dogfight.game.physics.MissileSolver.UpdateResult;
+import com.havzan.dogfight.game.pilots.RoundCornerPilot;
+import com.havzan.dogfight.game.ui.GameUI;
 
 public class GameWorld {
 	private CameraDirector camDirector;

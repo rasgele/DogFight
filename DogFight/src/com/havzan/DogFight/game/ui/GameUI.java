@@ -1,4 +1,4 @@
-package com.havzan.DogFight.game.ui;
+package com.havzan.dogfight.game.ui;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -22,16 +22,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.havzan.DogFight.Assets;
-import com.havzan.DogFight.IWorldObject;
-import com.havzan.DogFight.game.GameWorld;
-import com.havzan.DogFight.game.model.Aircraft;
-import com.havzan.DogFight.game.model.GameModel;
-import com.havzan.DogFight.game.model.IModelObject;
-import com.havzan.DogFight.game.model.Missile;
-import com.havzan.DogFight.game.model.ModelObjectChangeLister;
-import com.havzan.DogFight.game.ui.HeadUpDisplay.HeadUpDisplayStyle;
-import com.havzan.DogFight.game.ui.Radar.RadarStyle;
+import com.havzan.dogfight.Assets;
+import com.havzan.dogfight.IWorldObject;
+import com.havzan.dogfight.game.GameWorld;
+import com.havzan.dogfight.game.model.Aircraft;
+import com.havzan.dogfight.game.model.GameModel;
+import com.havzan.dogfight.game.model.IModelObject;
+import com.havzan.dogfight.game.model.Missile;
+import com.havzan.dogfight.game.model.ModelObjectChangeLister;
+import com.havzan.dogfight.game.ui.HeadUpDisplay.HeadUpDisplayStyle;
+import com.havzan.dogfight.game.ui.Radar.RadarStyle;
 
 public class GameUI {	
 	private GameWorld world;
