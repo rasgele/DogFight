@@ -21,7 +21,7 @@
        default-vertical: { background: sliderbackv, knob: sliderHandle },
    },
 
-   com.havzan.dogfight.game.ui.Radar$RadarStyle: {
+   com.havzan.DogFight.game.ui.Radar$RadarStyle: {
    	   default: { background: radar, aircraft: radar_a, missile: radar_m },
    },
    
@@ -29,7 +29,7 @@
    	   default: { font: candara14, fontColorSelected: red, fontColorUnselected: white, selection: listSelection },
    },
    
-   com.havzan.dogfight.game.ui.HeadUpDisplay$HeadUpDisplayStyle: {
+   com.havzan.DogFight.game.ui.HeadUpDisplay$HeadUpDisplayStyle: {
    	   default: { trackingDrawable: triangle, lockedDrawable: locked, elevationDrawable: elevation },
    },
 }
